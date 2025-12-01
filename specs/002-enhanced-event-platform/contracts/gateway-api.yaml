@@ -1,0 +1,821 @@
+openapi: 3.0.3
+info:
+  title: Enhanced Event Management Platform - API Gateway
+  version: 1.0.0
+  description: |
+    API Gateway for the Enhanced Event Management Platform providing unified access to all microservices
+    with authentication, rate limiting, and request routing.
+
+servers:
+  - url: https://api.eventplatform.com/v1
+    description: Production API Gateway
+  - url: https://api.staging.eventplatform.com/v1
+    description: Staging API Gateway
+
+security:
+  - BearerAuth: []
+  - ApiKeyAuth: []
+
+paths:
+  # Customer Portal Routes
+  /customers/events/requests:
+    post:
+      summary: Submit new event request
+      tags: [Customer Portal]
+      operationId: submitEventRequest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventRequestSubmission'
+      responses:
+        '201':
+          description: Event request submitted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventRequest'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+    get:
+      summary: List customer's event requests
+      tags: [Customer Portal]
+      operationId: listEventRequests
+      parameters:
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/EventRequestStatus'
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: List of event requests
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EventRequest'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+
+  /customers/events/requests/{requestId}:
+    get:
+      summary: Get event request details
+      tags: [Customer Portal]
+      operationId: getEventRequest
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Event request details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      summary: Update event request (draft only)
+      tags: [Customer Portal]
+      operationId: updateEventRequest
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventRequestUpdate'
+      responses:
+        '200':
+          description: Event request updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventRequest'
+        '409':
+          description: Cannot update non-draft request
+
+  # Event Management Routes
+  /events:
+    get:
+      summary: List public events
+      tags: [Events]
+      operationId: listEvents
+      parameters:
+        - name: eventType
+          in: query
+          schema:
+            $ref: '#/components/schemas/EventType'
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: language
+          in: query
+          schema:
+            type: string
+            enum: [en, th, both]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+      responses:
+        '200':
+          description: List of events
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Event'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+
+  /events/{eventId}:
+    get:
+      summary: Get event details
+      tags: [Events]
+      operationId: getEvent
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: lang
+          in: query
+          schema:
+            type: string
+            enum: [en, th]
+            default: en
+      responses:
+        '200':
+          description: Event details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+
+  # Ticketing Routes
+  /events/{eventId}/tickets:
+    get:
+      summary: Get available ticket types for event
+      tags: [Ticketing]
+      operationId: getEventTicketTypes
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Available ticket types
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TicketType'
+
+    post:
+      summary: Purchase tickets
+      tags: [Ticketing]
+      operationId: purchaseTickets
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketPurchaseRequest'
+      responses:
+        '201':
+          description: Tickets purchased successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketPurchaseResponse'
+        '402':
+          description: Payment required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentRequired'
+
+  # Seat Management Routes
+  /events/{eventId}/seats:
+    get:
+      summary: Get seat map and availability
+      tags: [Seats]
+      operationId: getEventSeatMap
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Seat map with availability
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeatMap'
+
+  /events/{eventId}/seats/{seatId}/reserve:
+    post:
+      summary: Reserve seat temporarily
+      tags: [Seats]
+      operationId: reserveSeat
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: seatId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Seat reserved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeatReservation'
+        '409':
+          description: Seat already reserved
+
+  # Payment Routes
+  /payments/{paymentId}:
+    get:
+      summary: Get payment status
+      tags: [Payments]
+      operationId: getPaymentStatus
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Payment status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+
+  # Analytics Routes (Admin)
+  /analytics/events/{eventId}/dashboard:
+    get:
+      summary: Get event analytics dashboard
+      tags: [Analytics]
+      operationId: getEventAnalytics
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: timeRange
+          in: query
+          schema:
+            type: string
+            enum: [1h, 24h, 7d, 30d]
+            default: 24h
+      responses:
+        '200':
+          description: Analytics data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventAnalytics'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+  schemas:
+    EventRequestSubmission:
+      type: object
+      required: [requestedEventName, eventType, estimatedCapacity, preferredDates, selectedModules]
+      properties:
+        requestedEventName:
+          type: string
+          minLength: 1
+          maxLength: 200
+        eventType:
+          $ref: '#/components/schemas/EventType'
+        estimatedCapacity:
+          type: integer
+          minimum: 1
+          maximum: 10000
+        preferredDates:
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+            format: date
+        selectedModules:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlatformModule'
+        customRequirements:
+          type: string
+          maxLength: 2000
+        attachments:
+          type: array
+          items:
+            type: string
+            format: uri
+
+    EventRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        customerId:
+          type: string
+          format: uuid
+        requestedEventName:
+          type: string
+        eventType:
+          $ref: '#/components/schemas/EventType'
+        estimatedCapacity:
+          type: integer
+        preferredDates:
+          type: array
+          items:
+            type: string
+            format: date
+        selectedModules:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlatformModule'
+        status:
+          $ref: '#/components/schemas/EventRequestStatus'
+        submittedAt:
+          type: string
+          format: date-time
+        reviewComments:
+          type: string
+        approvedAt:
+          type: string
+          format: date-time
+        confirmedAt:
+          type: string
+          format: date-time
+
+    EventRequestStatus:
+      type: string
+      enum: [draft, submitted, under_review, approved, rejected, confirmed, launched]
+
+    EventType:
+      type: string
+      enum: [concert, conference, training, seminar, workshop, networking, motor_show, tech_talk]
+
+    PlatformModule:
+      type: string
+      enum: [
+        basic_registration,
+        advanced_ticketing,
+        seat_management,
+        vip_management,
+        speaker_management,
+        analytics_dashboard,
+        multi_language,
+        compliance_suite
+      ]
+
+    Event:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        eventType:
+          $ref: '#/components/schemas/EventType'
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        timezone:
+          type: string
+        capacity:
+          type: integer
+        currentRegistrations:
+          type: integer
+        status:
+          type: string
+          enum: [draft, published, registration_open, registration_closed, in_progress, completed, cancelled]
+        isPublic:
+          type: boolean
+        tags:
+          type: array
+          items:
+            type: string
+        language:
+          type: string
+          enum: [en, th, both]
+
+    TicketType:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        priceAmount:
+          type: integer
+          description: Price in smallest currency unit
+        priceCurrency:
+          type: string
+          pattern: '^[A-Z]{3}$'
+        maxQuantity:
+          type: integer
+        availableQuantity:
+          type: integer
+        saleStartDate:
+          type: string
+          format: date-time
+        saleEndDate:
+          type: string
+          format: date-time
+
+    TicketPurchaseRequest:
+      type: object
+      required: [tickets, paymentMethod]
+      properties:
+        tickets:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required: [ticketTypeId, quantity]
+            properties:
+              ticketTypeId:
+                type: string
+                format: uuid
+              quantity:
+                type: integer
+                minimum: 1
+              seatIds:
+                type: array
+                items:
+                  type: string
+                  format: uuid
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethod'
+        promoCode:
+          type: string
+        attendeeInfo:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttendeeInfo'
+
+    AttendeeInfo:
+      type: object
+      required: [email, firstName, lastName]
+      properties:
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+        lastName:
+          type: string
+        company:
+          type: string
+        dietaryRequirements:
+          type: string
+
+    PaymentMethod:
+      type: object
+      required: [type]
+      properties:
+        type:
+          type: string
+          enum: [credit_card, qr_code, bank_transfer]
+        cardToken:
+          type: string
+          description: Required for credit_card payments
+
+    TicketPurchaseResponse:
+      type: object
+      properties:
+        paymentId:
+          type: string
+          format: uuid
+        tickets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ticket'
+        totalAmount:
+          type: integer
+        currency:
+          type: string
+        paymentStatus:
+          type: string
+          enum: [pending, processing, succeeded, failed]
+
+    Ticket:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        eventId:
+          type: string
+          format: uuid
+        attendeeEmail:
+          type: string
+        ticketType:
+          type: string
+        qrCode:
+          type: string
+        status:
+          type: string
+          enum: [reserved, confirmed, transferred, used, cancelled]
+        seatNumber:
+          type: string
+
+    SeatMap:
+      type: object
+      properties:
+        eventId:
+          type: string
+          format: uuid
+        venue:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+            layout:
+              type: object
+        seats:
+          type: array
+          items:
+            $ref: '#/components/schemas/Seat'
+
+    Seat:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        section:
+          type: string
+        row:
+          type: string
+        number:
+          type: string
+        seatType:
+          type: string
+          enum: [standard, premium, vip, wheelchair]
+        coordinates:
+          type: object
+          properties:
+            x:
+              type: number
+            y:
+              type: number
+        priceAmount:
+          type: integer
+        isAvailable:
+          type: boolean
+        isReserved:
+          type: boolean
+        reservedUntil:
+          type: string
+          format: date-time
+
+    SeatReservation:
+      type: object
+      properties:
+        seatId:
+          type: string
+          format: uuid
+        reservedUntil:
+          type: string
+          format: date-time
+        reservationToken:
+          type: string
+
+    Payment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        amount:
+          type: integer
+        currency:
+          type: string
+        status:
+          type: string
+          enum: [pending, processing, succeeded, failed, cancelled, refunded]
+        paymentMethod:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        processedAt:
+          type: string
+          format: date-time
+
+    EventAnalytics:
+      type: object
+      properties:
+        eventId:
+          type: string
+          format: uuid
+        registrationMetrics:
+          type: object
+          properties:
+            totalRegistrations:
+              type: integer
+            targetCapacity:
+              type: integer
+            registrationRate:
+              type: number
+            conversionRate:
+              type: number
+        revenueMetrics:
+          type: object
+          properties:
+            totalRevenue:
+              type: integer
+            averageTicketPrice:
+              type: integer
+            currency:
+              type: string
+        attendanceMetrics:
+          type: object
+          properties:
+            checkedIn:
+              type: integer
+            noShows:
+              type: integer
+            attendanceRate:
+              type: number
+        satisfactionMetrics:
+          type: object
+          properties:
+            npsScore:
+              type: number
+            csatScore:
+              type: number
+            responseCount:
+              type: integer
+
+    Pagination:
+      type: object
+      properties:
+        limit:
+          type: integer
+        offset:
+          type: integer
+        total:
+          type: integer
+        hasNext:
+          type: boolean
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    RateLimited:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    PaymentRequired:
+      description: Payment processing required
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              paymentUrl:
+                type: string
+                format: uri
+              paymentId:
+                type: string
+                format: uuid
