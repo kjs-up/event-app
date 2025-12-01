@@ -1,6 +1,6 @@
 # Feature Specification: Enhanced Event Management Platform
 
-**Feature Branch**: `002-enhanced-event-platform`
+**Feature Branch**: `event-platform`
 **Created**: 2025-12-01
 **Status**: Draft
 **Input**: User description: "Comprehensive event management platform with advanced ticketing, customer registration system, multi-jurisdiction compliance, internationalization, and enterprise-grade features"

@@ -1,7 +1,7 @@
 # Implementation Tasks: Enhanced Event Management Platform
 
 **Feature**: Enhanced Event Management Platform
-**Branch**: `002-enhanced-event-platform`
+**Branch**: `event-platform`
 **Generated**: 2025-12-01
 **Total Tasks**: 89
 

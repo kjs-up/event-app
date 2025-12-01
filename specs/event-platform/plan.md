@@ -1,7 +1,7 @@
 # Implementation Plan: Enhanced Event Management Platform
 
-**Branch**: `002-enhanced-event-platform` | **Date**: 2025-12-01 | **Spec**: [spec.md](./spec.md)
-**Input**: Feature specification from `/specs/002-enhanced-event-platform/spec.md`
+**Branch**: `event-platform` | **Date**: 2025-12-01 | **Spec**: [spec.md](./spec.md)
+**Input**: Feature specification from `/specs/event-platform/spec.md`
 
 **Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
 

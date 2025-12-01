@@ -1,7 +1,7 @@
 # Enhanced Event Management Platform - Development Quickstart
 
 **Date**: 2025-12-01
-**Branch**: `002-enhanced-event-platform`
+**Branch**: `event-platform`
 **Status**: Phase 1 Design Complete
 
 ## Overview
