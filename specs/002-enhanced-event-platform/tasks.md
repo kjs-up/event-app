@@ -56,7 +56,7 @@ This document provides detailed implementation tasks for building the Enhanced E
 
 ### Database Foundation
 
-- [ ] T009 Create database migration system using Prisma or TypeORM in shared/migrations/
+- [ ] T009 Create database migration system using TypeORM in shared/migrations/
 - [ ] T010 [P] Define base database schema with Customer, User, Event entities in shared/schemas/
 - [ ] T011 [P] Create TimescaleDB hypertables for analytics data in shared/migrations/
 - [ ] T012 [P] Set up database indexing strategy for performance-critical queries
