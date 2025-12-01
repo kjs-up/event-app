@@ -1,0 +1,1195 @@
+openapi: 3.0.3
+info:
+  title: Event Management Platform API
+  description: Comprehensive event management platform supporting event creation, registration, payment processing, and analytics
+  version: 1.0.0
+  contact:
+    name: Event Platform API
+    email: api@eventplatform.com
+
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Development server
+  - url: https://api.eventplatform.com/v1
+    description: Production server
+
+tags:
+  - name: Authentication
+    description: User authentication and authorization
+  - name: Events
+    description: Event project and batch management
+  - name: Registration
+    description: Participant registration workflow
+  - name: Payments
+    description: Payment processing for paid events
+  - name: Check-in
+    description: Event check-in system for staff
+  - name: Reports
+    description: Analytics and reporting
+  - name: Users
+    description: User management
+  - name: Speakers
+    description: Speaker management
+
+paths:
+  # Authentication
+  /auth/login:
+    post:
+      tags: [Authentication]
+      summary: Authenticate user and return JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 8
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/refresh:
+    post:
+      tags: [Authentication]
+      summary: Refresh JWT token
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+
+  # Event Projects
+  /events:
+    get:
+      tags: [Events]
+      summary: Get list of event projects
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [draft, pending_approval, approved, rejected, archived]
+        - name: event_type
+          in: query
+          schema:
+            type: string
+            enum: [training, seminar, concert, entertainment, foundation]
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: List of event projects
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventProjectList'
+
+    post:
+      tags: [Events]
+      summary: Create new event project
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventProjectCreate'
+      responses:
+        '201':
+          description: Event project created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventProject'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /events/{eventId}:
+    get:
+      tags: [Events]
+      summary: Get event project details
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Event project details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventProjectDetail'
+        '404':
+          description: Event project not found
+
+    patch:
+      tags: [Events]
+      summary: Update event project
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventProjectUpdate'
+      responses:
+        '200':
+          description: Event project updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventProject'
+
+  /events/{eventId}/approve:
+    post:
+      tags: [Events]
+      summary: Approve event project (Approver only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                notes:
+                  type: string
+      responses:
+        '200':
+          description: Event project approved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventProject'
+
+  /events/{eventId}/reject:
+    post:
+      tags: [Events]
+      summary: Reject event project (Approver only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason:
+                  type: string
+                  minLength: 10
+      responses:
+        '200':
+          description: Event project rejected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventProject'
+
+  # Event Batches
+  /events/{eventId}/batches:
+    get:
+      tags: [Events]
+      summary: Get event batches for a project
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: List of event batches
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventBatch'
+
+    post:
+      tags: [Events]
+      summary: Create new event batch
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventBatchCreate'
+      responses:
+        '201':
+          description: Event batch created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventBatch'
+
+  # Registration
+  /register:
+    post:
+      tags: [Registration]
+      summary: Register participant for event (public endpoint)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationRequest'
+      responses:
+        '201':
+          description: Registration successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Registration'
+        '400':
+          description: Registration validation error
+        '409':
+          description: Event at capacity or participant already registered
+
+  /registration/walk-in:
+    post:
+      tags: [Registration]
+      summary: Process walk-in registration (staff only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WalkInRegistrationRequest'
+      responses:
+        '201':
+          description: Walk-in registration successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Registration'
+
+  /registration/{registrationId}:
+    get:
+      tags: [Registration]
+      summary: Get registration details
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: registrationId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Registration details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationDetail'
+
+    patch:
+      tags: [Registration]
+      summary: Update registration status
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: registrationId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [confirmed, cancelled, waitlisted]
+                notes:
+                  type: string
+      responses:
+        '200':
+          description: Registration updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Registration'
+
+  # Payments
+  /payments/intent:
+    post:
+      tags: [Payments]
+      summary: Create payment intent for registration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [registration_id, payment_method]
+              properties:
+                registration_id:
+                  type: string
+                  format: uuid
+                payment_method:
+                  type: string
+                  enum: [credit_card, qr_code]
+                provider:
+                  type: string
+                  enum: [stripe, paypal, promptpay, nets_qr]
+      responses:
+        '200':
+          description: Payment intent created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentIntent'
+
+  /payments/webhook:
+    post:
+      tags: [Payments]
+      summary: Handle payment provider webhooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Webhook processed successfully
+
+  # Check-in
+  /check-in/session:
+    post:
+      tags: [Check-in]
+      summary: Start check-in session for staff
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [event_batch_id]
+              properties:
+                event_batch_id:
+                  type: string
+                  format: uuid
+      responses:
+        '201':
+          description: Check-in session started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckInSession'
+
+  /check-in/session/{sessionId}/end:
+    post:
+      tags: [Check-in]
+      summary: End check-in session
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Check-in session ended successfully
+
+  /check-in/participant:
+    post:
+      tags: [Check-in]
+      summary: Check in participant
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [registration_id]
+              properties:
+                registration_id:
+                  type: string
+                  format: uuid
+                notes:
+                  type: string
+      responses:
+        '200':
+          description: Participant checked in successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Registration'
+
+  # Reports
+  /reports/generate:
+    post:
+      tags: [Reports]
+      summary: Generate event report
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportGenerationRequest'
+      responses:
+        '202':
+          description: Report generation started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventReport'
+
+  /reports/{reportId}:
+    get:
+      tags: [Reports]
+      summary: Get report status and download URL
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: reportId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Report details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventReport'
+
+  /reports/{reportId}/download:
+    get:
+      tags: [Reports]
+      summary: Download generated report file
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: reportId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Report file download
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: string
+                format: binary
+
+  # Real-time endpoints (WebSocket)
+  /ws/events/{eventBatchId}/capacity:
+    get:
+      tags: [Events]
+      summary: WebSocket endpoint for real-time capacity updates
+      parameters:
+        - name: eventBatchId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '101':
+          description: WebSocket connection established
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    # Authentication
+    AuthResponse:
+      type: object
+      required: [access_token, user, expires_in]
+      properties:
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+        expires_in:
+          type: integer
+
+    # User
+    User:
+      type: object
+      required: [id, email, first_name, last_name, role]
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        first_name:
+          type: string
+        last_name:
+          type: string
+        role:
+          type: string
+          enum: [maker, approver, admin]
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        last_login:
+          type: string
+          format: date-time
+
+    # Event Project
+    EventProject:
+      type: object
+      required: [id, name, event_type, max_capacity, is_paid, has_speakers, status, created_by]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        event_type:
+          type: string
+          enum: [training, seminar, concert, entertainment, foundation]
+        foundation_template_id:
+          type: string
+          format: uuid
+        max_capacity:
+          type: integer
+          minimum: 1
+          maximum: 2000
+        is_paid:
+          type: boolean
+        base_price:
+          type: number
+          format: decimal
+        currency:
+          type: string
+          default: USD
+        has_speakers:
+          type: boolean
+        status:
+          type: string
+          enum: [draft, pending_approval, approved, rejected, archived]
+        created_by:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        approved_at:
+          type: string
+          format: date-time
+        approved_by:
+          type: string
+          format: uuid
+        rejection_reason:
+          type: string
+
+    EventProjectCreate:
+      type: object
+      required: [name, event_type, max_capacity, is_paid, has_speakers]
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 2000
+        event_type:
+          type: string
+          enum: [training, seminar, concert, entertainment, foundation]
+        foundation_template_id:
+          type: string
+          format: uuid
+        max_capacity:
+          type: integer
+          minimum: 1
+          maximum: 2000
+        is_paid:
+          type: boolean
+        base_price:
+          type: number
+          format: decimal
+          minimum: 0
+        currency:
+          type: string
+          default: USD
+        has_speakers:
+          type: boolean
+
+    EventProjectUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 2000
+        max_capacity:
+          type: integer
+          minimum: 1
+          maximum: 2000
+        base_price:
+          type: number
+          format: decimal
+          minimum: 0
+
+    EventProjectList:
+      type: object
+      required: [data, pagination]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventProject'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    EventProjectDetail:
+      allOf:
+        - $ref: '#/components/schemas/EventProject'
+        - type: object
+          properties:
+            batches:
+              type: array
+              items:
+                $ref: '#/components/schemas/EventBatch'
+            speakers:
+              type: array
+              items:
+                $ref: '#/components/schemas/Speaker'
+
+    # Event Batch
+    EventBatch:
+      type: object
+      required: [id, event_project_id, batch_number, start_date, end_date, start_time, end_time, location, capacity]
+      properties:
+        id:
+          type: string
+          format: uuid
+        event_project_id:
+          type: string
+          format: uuid
+        batch_number:
+          type: integer
+        name:
+          type: string
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        start_time:
+          type: string
+          format: time
+        end_time:
+          type: string
+          format: time
+        location:
+          type: string
+        location_details:
+          type: string
+        capacity:
+          type: integer
+          minimum: 1
+          maximum: 2000
+        current_registrations:
+          type: integer
+          minimum: 0
+        registration_open_date:
+          type: string
+          format: date-time
+        registration_close_date:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [upcoming, registration_open, registration_closed, in_progress, completed, cancelled]
+
+    EventBatchCreate:
+      type: object
+      required: [batch_number, start_date, end_date, start_time, end_time, location, capacity, registration_open_date, registration_close_date]
+      properties:
+        batch_number:
+          type: integer
+          minimum: 1
+        name:
+          type: string
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        start_time:
+          type: string
+          format: time
+        end_time:
+          type: string
+          format: time
+        location:
+          type: string
+          minLength: 3
+        location_details:
+          type: string
+        capacity:
+          type: integer
+          minimum: 1
+          maximum: 2000
+        registration_open_date:
+          type: string
+          format: date-time
+        registration_close_date:
+          type: string
+          format: date-time
+
+    # Speaker
+    Speaker:
+      type: object
+      required: [id, event_project_id, first_name, last_name]
+      properties:
+        id:
+          type: string
+          format: uuid
+        event_project_id:
+          type: string
+          format: uuid
+        first_name:
+          type: string
+        last_name:
+          type: string
+        bio:
+          type: string
+        title:
+          type: string
+        company:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        profile_image_url:
+          type: string
+          format: uri
+        linkedin_url:
+          type: string
+          format: uri
+        display_order:
+          type: integer
+
+    # Registration
+    RegistrationRequest:
+      type: object
+      required: [event_batch_id, participant]
+      properties:
+        event_batch_id:
+          type: string
+          format: uuid
+        participant:
+          $ref: '#/components/schemas/ParticipantCreate'
+
+    WalkInRegistrationRequest:
+      allOf:
+        - $ref: '#/components/schemas/RegistrationRequest'
+        - type: object
+          properties:
+            notes:
+              type: string
+
+    ParticipantCreate:
+      type: object
+      required: [email, first_name, last_name]
+      properties:
+        email:
+          type: string
+          format: email
+        first_name:
+          type: string
+          minLength: 1
+        last_name:
+          type: string
+          minLength: 1
+        phone:
+          type: string
+        company:
+          type: string
+        title:
+          type: string
+        dietary_restrictions:
+          type: string
+        special_requirements:
+          type: string
+
+    Registration:
+      type: object
+      required: [id, event_batch_id, participant_id, registration_type, status, payment_status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        event_batch_id:
+          type: string
+          format: uuid
+        participant_id:
+          type: string
+          format: uuid
+        registration_type:
+          type: string
+          enum: [online, walk_in]
+        status:
+          type: string
+          enum: [pending, confirmed, waitlisted, cancelled]
+        payment_status:
+          type: string
+          enum: [not_required, pending, paid, failed, refunded]
+        payment_amount:
+          type: number
+          format: decimal
+        registration_date:
+          type: string
+          format: date-time
+        confirmation_sent:
+          type: boolean
+        checked_in:
+          type: boolean
+        check_in_time:
+          type: string
+          format: date-time
+        notes:
+          type: string
+
+    RegistrationDetail:
+      allOf:
+        - $ref: '#/components/schemas/Registration'
+        - type: object
+          properties:
+            participant:
+              $ref: '#/components/schemas/Participant'
+            event_batch:
+              $ref: '#/components/schemas/EventBatch'
+            payments:
+              type: array
+              items:
+                $ref: '#/components/schemas/Payment'
+
+    # Participant
+    Participant:
+      type: object
+      required: [id, email, first_name, last_name]
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        first_name:
+          type: string
+        last_name:
+          type: string
+        phone:
+          type: string
+        company:
+          type: string
+        title:
+          type: string
+        dietary_restrictions:
+          type: string
+        special_requirements:
+          type: string
+
+    # Payment
+    PaymentIntent:
+      type: object
+      required: [payment_id, provider, payment_method, amount, currency]
+      properties:
+        payment_id:
+          type: string
+          format: uuid
+        provider:
+          type: string
+          enum: [stripe, paypal, promptpay, nets_qr]
+        payment_method:
+          type: string
+          enum: [credit_card, qr_code]
+        amount:
+          type: number
+          format: decimal
+        currency:
+          type: string
+        client_secret:
+          type: string
+        qr_code_data:
+          type: string
+        expires_at:
+          type: string
+          format: date-time
+
+    Payment:
+      type: object
+      required: [id, registration_id, payment_provider, payment_method, amount, currency, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        registration_id:
+          type: string
+          format: uuid
+        payment_provider:
+          type: string
+          enum: [stripe, paypal, promptpay, nets_qr]
+        provider_transaction_id:
+          type: string
+        payment_method:
+          type: string
+          enum: [credit_card, qr_code, bank_transfer]
+        amount:
+          type: number
+          format: decimal
+        currency:
+          type: string
+        status:
+          type: string
+          enum: [pending, completed, failed, cancelled, refunded]
+        payment_date:
+          type: string
+          format: date-time
+        failure_reason:
+          type: string
+        receipt_url:
+          type: string
+          format: uri
+        refund_amount:
+          type: number
+          format: decimal
+        refund_date:
+          type: string
+          format: date-time
+
+    # Check-in
+    CheckInSession:
+      type: object
+      required: [id, event_batch_id, staff_user_id, session_start]
+      properties:
+        id:
+          type: string
+          format: uuid
+        event_batch_id:
+          type: string
+          format: uuid
+        staff_user_id:
+          type: string
+          format: uuid
+        session_start:
+          type: string
+          format: date-time
+        session_end:
+          type: string
+          format: date-time
+        check_ins_processed:
+          type: integer
+          minimum: 0
+
+    # Reports
+    ReportGenerationRequest:
+      type: object
+      required: [event_batch_id, report_type, file_format]
+      properties:
+        event_batch_id:
+          type: string
+          format: uuid
+        report_type:
+          type: string
+          enum: [attendance, financial, summary, analytics]
+        file_format:
+          type: string
+          enum: [pdf, excel]
+        parameters:
+          type: object
+
+    EventReport:
+      type: object
+      required: [id, event_batch_id, report_type, file_format, generation_status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        event_batch_id:
+          type: string
+          format: uuid
+        report_type:
+          type: string
+          enum: [attendance, financial, summary, analytics]
+        generated_by:
+          type: string
+          format: uuid
+        file_format:
+          type: string
+          enum: [pdf, excel]
+        file_url:
+          type: string
+          format: uri
+        file_size:
+          type: integer
+        generation_status:
+          type: string
+          enum: [pending, completed, failed]
+        parameters:
+          type: object
+        generated_at:
+          type: string
+          format: date-time
+        expires_at:
+          type: string
+          format: date-time
+        download_count:
+          type: integer
+
+    # Common
+    Pagination:
+      type: object
+      required: [page, limit, total, total_pages]
+      properties:
+        page:
+          type: integer
+          minimum: 1
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+        total:
+          type: integer
+          minimum: 0
+        total_pages:
+          type: integer
+          minimum: 0
+
+    Error:
+      type: object
+      required: [error, message]
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
