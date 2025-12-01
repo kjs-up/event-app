@@ -1,0 +1,11 @@
+node_modules/
+build/
+dist/
+*.class
+
+.DS_Store # macOS system file
+Thumbs.db # Windows system file
+
+.env
+.env.local
+config.local.json
