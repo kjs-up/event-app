@@ -32,7 +32,7 @@
 - [ ] T006 [P] Setup ESLint and Prettier configuration in backend/.eslintrc.js and frontend/.eslintrc.js
 - [ ] T007 [P] Create shared TypeScript types in shared/types/index.ts
 - [ ] T008 [P] Setup Docker Compose for PostgreSQL and Redis in docker-compose.dev.yml
-- [ ] T009 Create environment configuration files backend/.env.example and frontend/.env.example
+- [X] T009 Create environment configuration files backend/.env.example and frontend/.env.example
 
 ---
 
@@ -42,9 +42,9 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T010 Setup database connection and TypeORM configuration in backend/src/database/database.module.ts
-- [ ] T011 [P] Create database migration framework setup in backend/migrations/
-- [ ] T012 [P] Implement JWT authentication module structure in backend/src/auth/auth.module.ts
+- [X] T010 Setup database connection and TypeORM configuration in backend/src/database/database.module.ts
+- [X] T011 [P] Create database migration framework setup in backend/migrations/
+- [X] T012 [P] Implement JWT authentication module structure in backend/src/auth/auth.module.ts
 - [ ] T013 [P] Setup API routing and middleware structure in backend/src/app.module.ts
 - [ ] T014 [P] Create User entity and migration in backend/src/users/entities/user.entity.ts
 - [ ] T015 [P] Setup role-based authorization guards in backend/src/auth/guards/roles.guard.ts

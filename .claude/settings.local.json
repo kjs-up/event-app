@@ -6,7 +6,9 @@
       "Bash(.specify/scripts/bash/update-agent-context.sh:*)",
       "Bash(.specify/scripts/bash/check-prerequisites.sh:*)",
       "Bash(git fetch:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": []
