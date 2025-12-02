@@ -148,3 +148,4 @@ dist/
 build/
 out/
 backend/swagger.json
+.vscode
