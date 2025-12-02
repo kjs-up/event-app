@@ -147,3 +147,4 @@ coverage/
 dist/
 build/
 out/
+backend/swagger.json
