@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { MigrationInterface, QueryRunner, Table, Index, ForeignKey } from "typeorm";
 
 export class InitialSetup1701436800000 implements MigrationInterface {

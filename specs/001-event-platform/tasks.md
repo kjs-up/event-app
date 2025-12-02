@@ -70,22 +70,22 @@
 
 ### Implementation for User Story 1
 
-- [ ] T025 [P] [US1] Create EventProject entity in backend/src/events/entities/event-project.entity.ts
-- [ ] T026 [P] [US1] Create FoundationTemplate entity in backend/src/events/entities/foundation-template.entity.ts
-- [ ] T027 [P] [US1] Create EventApproval entity in backend/src/events/entities/event-approval.entity.ts
-- [ ] T028 [US1] Create EventProjectService with CRUD operations in backend/src/events/services/event-project.service.ts
-- [ ] T029 [US1] Create ApprovalService with approval workflow logic in backend/src/events/services/approval.service.ts
-- [ ] T030 [US1] Implement EventProjectController with endpoints in backend/src/events/controllers/event-project.controller.ts
-- [ ] T031 [US1] Implement ApprovalController with approve/reject endpoints in backend/src/events/controllers/approval.controller.ts
-- [ ] T032 [US1] Add validation DTOs for event creation in backend/src/events/dto/create-event-project.dto.ts
-- [ ] T033 [US1] Add email notification service for approvals in backend/src/notifications/approval-notification.service.ts
+- [X] T025 [P] [US1] Create EventProject entity in backend/src/events/entities/event-project.entity.ts
+- [X] T026 [P] [US1] Create FoundationTemplate entity in backend/src/events/entities/foundation-template.entity.ts
+- [X] T027 [P] [US1] Create EventApproval entity in backend/src/events/entities/event-approval.entity.ts
+- [X] T028 [US1] Create EventProjectService with CRUD operations in backend/src/events/services/event-project.service.ts
+- [X] T029 [US1] Create ApprovalService with approval workflow logic in backend/src/events/services/approval.service.ts
+- [X] T030 [US1] Implement EventProjectController with endpoints in backend/src/events/controllers/event-project.controller.ts
+- [X] T031 [US1] Implement ApprovalController with approve/reject endpoints in backend/src/events/controllers/approval.controller.ts
+- [X] T032 [US1] Add validation DTOs for event creation in backend/src/events/dto/create-event-project.dto.ts
+- [X] T033 [US1] Add email notification service for approvals in backend/src/notifications/approval-notification.service.ts
 - [ ] T034 [P] [US1] Create EventList page component in frontend/src/pages/events/EventList.tsx
 - [ ] T035 [P] [US1] Create EventCreate form component in frontend/src/pages/events/EventCreate.tsx
 - [ ] T036 [P] [US1] Create ApprovalQueue page component in frontend/src/pages/events/ApprovalQueue.tsx
-- [ ] T037 [P] [US1] Create EventCard component in frontend/src/components/events/EventCard.tsx
-- [ ] T038 [P] [US1] Create ApprovalActions component in frontend/src/components/events/ApprovalActions.tsx
-- [ ] T039 [US1] Create events API service client in frontend/src/services/events.service.ts
-- [ ] T040 [US1] Implement role-based route protection for Maker/Approver views in frontend/src/hooks/useRole.ts
+- [X] T037 [P] [US1] Create EventCard component in frontend/src/components/events/EventCard.tsx
+- [X] T038 [P] [US1] Create ApprovalActions component in frontend/src/components/events/ApprovalActions.tsx
+- [X] T039 [US1] Create events API service client in frontend/src/services/events.service.ts
+- [X] T040 [US1] Implement role-based route protection for Maker/Approver views in frontend/src/hooks/useRole.ts
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 

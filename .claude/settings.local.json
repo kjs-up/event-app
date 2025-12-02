@@ -9,7 +9,13 @@
       "Bash(mkdir:*)",
       "Bash(git rev-parse:*)",
       "Bash(tree:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(npm update:*)",
+      "Bash(npm audit)",
+      "Bash(npm audit fix:*)",
+      "Bash(npm view:*)",
+      "Bash(docker run:*)",
+      "Bash(npm run build)"
     ],
     "deny": [],
     "ask": []

@@ -43,9 +43,8 @@ services:
   # API Gateway Service
   gateway:
     build:
-      context: ../../services/gateway
-      dockerfile: Dockerfile.dev
-    container_name: event-platform-gateway
+      context: ../../backend
+    container_name: event-platform
     ports:
       - "3000:3000"
       - "9229:9229" # Debug port
@@ -57,7 +56,7 @@ services:
       - JWT_EXPIRES_IN=24h
       - PORT=3000
     volumes:
-      - ../../services/gateway:/app
+      - ../../backend:/app
       - /app/node_modules
     networks:
       - event-platform
@@ -66,104 +65,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    command: npm run dev
-    restart: unless-stopped
-
-  # User Service
-  user-service:
-    build:
-      context: ../../services/user-service
-      dockerfile: Dockerfile.dev
-    container_name: event-platform-user-service
-    ports:
-      - "3001:3001"
-      - "9230:9229" # Debug port
-    environment:
-      - NODE_ENV=development
-      - DATABASE_URL=postgresql://eventuser:eventpass@postgres:5432/eventdb
-      - REDIS_URL=redis://redis:6379
-      - JWT_SECRET=dev-jwt-secret-key-change-in-production
-      - PORT=3001
-    volumes:
-      - ../../services/user-service:/app
-      - /app/node_modules
-    networks:
-      - event-platform
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    command: npm run dev
-    restart: unless-stopped
-
-  # Customer Portal Service
-  customer-portal-service:
-    build:
-      context: ../../services/customer-portal-service
-      dockerfile: Dockerfile.dev
-    container_name: event-platform-customer-portal-service
-    ports:
-      - "3002:3002"
-      - "9231:9229" # Debug port
-    environment:
-      - NODE_ENV=development
-      - DATABASE_URL=postgresql://eventuser:eventpass@postgres:5432/eventdb
-      - REDIS_URL=redis://redis:6379
-      - PORT=3002
-    volumes:
-      - ../../services/customer-portal-service:/app
-      - /app/node_modules
-    networks:
-      - event-platform
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    command: npm run dev
-    restart: unless-stopped
-
-  # Frontend Services
-  customer-portal:
-    build:
-      context: ../../frontend/customer-portal
-      dockerfile: Dockerfile.dev
-    container_name: event-platform-customer-portal
-    ports:
-      - "5173:5173"
-    environment:
-      - NODE_ENV=development
-      - VITE_API_URL=http://localhost:3000/api/v1
-      - VITE_WS_URL=ws://localhost:3000
-    volumes:
-      - ../../frontend/customer-portal:/app
-      - /app/node_modules
-    networks:
-      - event-platform
-    depends_on:
-      - gateway
-    command: npm run dev
-    restart: unless-stopped
-
-  admin-portal:
-    build:
-      context: ../../frontend/admin-portal
-      dockerfile: Dockerfile.dev
-    container_name: event-platform-admin-portal
-    ports:
-      - "5174:5173"
-    environment:
-      - NODE_ENV=development
-      - VITE_API_URL=http://localhost:3000/api/v1
-      - VITE_WS_URL=ws://localhost:3000
-    volumes:
-      - ../../frontend/admin-portal:/app
-      - /app/node_modules
-    networks:
-      - event-platform
-    depends_on:
-      - gateway
     command: npm run dev
     restart: unless-stopped
 
