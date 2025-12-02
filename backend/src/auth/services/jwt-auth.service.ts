@@ -50,7 +50,7 @@ export class JwtAuthService {
       payload,
       {
         secret: this.refreshTokenSecret,
-        expiresIn: this.refreshTokenExpiry,
+        expiresIn: this.refreshTokenExpiry as any,
       }
     );
 
@@ -196,7 +196,7 @@ export class JwtAuthService {
     };
 
     return await this.jwtService.signAsync(payload, {
-      expiresIn: expiresIn || '1h',
+      expiresIn: (expiresIn || '1h') as any,
     });
   }
 }

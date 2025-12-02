@@ -34,14 +34,15 @@ import {
   UpdateEventProjectDto,
   SubmitApprovalDto,
 } from '../dto';
-import { EventProject, EventStatus, EventType } from '../entities/event-project.entity';
+import { EventProject } from '../entities/event-project.entity';
+import { EventType, EventStatus } from '../enums/event.enums';
 
 @ApiTags('Event Projects')
 @ApiBearerAuth()
 @Controller('event-projects')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class EventProjectController {
-  constructor(private readonly eventProjectService: EventProjectService) {}
+  constructor(private readonly eventProjectService: EventProjectService) { }
 
   @Post()
   @ApiOperation({
@@ -191,9 +192,9 @@ export class EventProjectController {
 
     // Non-admin users can only view their own events or approved events
     if (req.user.role !== UserRole.ADMIN &&
-        req.user.role !== UserRole.APPROVER &&
-        eventProject.createdBy !== req.user.userId &&
-        eventProject.status !== EventStatus.APPROVED) {
+      req.user.role !== UserRole.APPROVER &&
+      eventProject.createdBy !== req.user.userId &&
+      eventProject.status !== EventStatus.APPROVED) {
       throw new ForbiddenException('Access denied');
     }
 

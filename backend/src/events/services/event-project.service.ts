@@ -7,11 +7,8 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindManyOptions, FindOneOptions } from 'typeorm';
-import {
-  EventProject,
-  EventStatus,
-  EventType,
-} from '../entities/event-project.entity';
+import { EventProject } from '../entities/event-project.entity';
+import { EventType, EventStatus } from '../enums/event.enums';
 import { FoundationTemplate } from '../entities/foundation-template.entity';
 import { User, UserRole } from '../../users/entities/user.entity';
 import { CreateEventProjectDto } from '../dto/create-event-project.dto';
@@ -42,7 +39,7 @@ export class EventProjectService {
     private readonly eventProjectRepository: Repository<EventProject>,
     @InjectRepository(FoundationTemplate)
     private readonly foundationTemplateRepository: Repository<FoundationTemplate>,
-  ) {}
+  ) { }
 
   /**
    * Create a new event project

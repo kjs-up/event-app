@@ -2,6 +2,8 @@
 
 import 'reflect-metadata';
 import { AppDataSource, initializeDataSource, closeDataSource } from '../src/database/data-source';
+import * as fs from 'fs';
+import * as path from 'path';
 
 async function runMigrations() {
   try {
@@ -30,7 +32,7 @@ async function runMigrations() {
 
   } catch (error) {
     console.error('❌ Migration failed:', error);
-    console.error('Stack trace:', error.stack);
+    console.error('Stack trace:', (error as Error).stack);
     process.exit(1);
   } finally {
     await closeDataSource();
@@ -101,11 +103,47 @@ async function createMigration(name: string) {
     await initializeDataSource();
 
     // Generate migration based on entity changes
-    await AppDataSource.driver.createQueryRunner().query(
-      `CREATE MIGRATION ${name}`
-    );
+    // Determine next version
+    const migrationsDir = path.join(process.cwd(), 'migrations');
+    const files = fs.readdirSync(migrationsDir);
+    let maxVersion = 0;
 
-    console.log('✅ Migration created successfully');
+    files.forEach(file => {
+      const match = file.match(/^v(\d+)__/);
+      if (match) {
+        const version = parseInt(match[1]);
+        if (version > maxVersion) maxVersion = version;
+      }
+    });
+
+    const nextVersion = maxVersion + 1;
+    const timestamp = Date.now();
+
+    // Helper to convert to snake_case
+    const toSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`).replace(/^_/, '').toLowerCase();
+
+    // Helper to convert to PascalCase
+    const toPascalCase = (str: string) => str.replace(/(^\w|_\w)/g, m => m.replace('_', '').toUpperCase());
+
+    const snakeName = toSnakeCase(name);
+    const pascalName = toPascalCase(name);
+
+    const migrationName = `v${nextVersion}__${snakeName}_${timestamp}`;
+    const className = `v${nextVersion}__${snakeName}_${timestamp}`;
+    const nameProperty = `v${nextVersion}__${snakeName}_${timestamp}`;
+    // Get SQL queries that would sync the schema
+    const sqlInMemory = await AppDataSource.driver.createSchemaBuilder().log();
+
+    if (sqlInMemory.upQueries.length === 0) {
+      console.log('⚠️  No schema changes detected - nothing to migrate');
+      return;
+    }
+
+    console.log('✅ Migration queries generated:');
+    console.log('Up queries:', sqlInMemory.upQueries.length);
+    console.log('Down queries:', sqlInMemory.downQueries.length);
+    console.log('\n📌 Note: Use TypeORM CLI to generate migration files:');
+    console.log(`   npm run typeorm migration:generate -- ./migrations/${migrationName}`);
 
   } catch (error) {
     console.error('❌ Failed to create migration:', error);

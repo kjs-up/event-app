@@ -12,10 +12,8 @@ import {
   ApprovalAction,
   ApprovalStatus,
 } from '../entities/event-approval.entity';
-import {
-  EventProject,
-  EventStatus,
-} from '../entities/event-project.entity';
+import { EventProject } from '../entities/event-project.entity';
+import { EventStatus } from '../enums/event.enums';
 import { User, UserRole } from '../../users/entities/user.entity';
 
 export interface ApprovalListOptions {
@@ -58,7 +56,7 @@ export class ApprovalService {
     private readonly approvalRepository: Repository<EventApproval>,
     @InjectRepository(EventProject)
     private readonly eventProjectRepository: Repository<EventProject>,
-  ) {}
+  ) { }
 
   /**
    * Submit event project for approval
@@ -380,8 +378,8 @@ export class ApprovalService {
 
     const expiringSoon = approvals.filter(
       a => a.status === ApprovalStatus.PENDING &&
-           a.expiresAt &&
-           a.expiresAt <= tomorrow
+        a.expiresAt &&
+        a.expiresAt <= tomorrow
     ).length;
 
     return {

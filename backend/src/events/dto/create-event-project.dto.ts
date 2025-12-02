@@ -16,7 +16,7 @@ import {
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { EventType } from '../entities/event-project.entity';
+import { EventType } from '../enums/event.enums';
 
 export class CreateEventProjectDto {
   @ApiProperty({

@@ -5,7 +5,7 @@ import { join } from 'path';
 
 @Injectable()
 export class DatabaseConfigService implements TypeOrmOptionsFactory {
-  constructor(private configService: ConfigService) {}
+  constructor(private configService: ConfigService) { }
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
     const isProduction = this.configService.get('NODE_ENV') === 'production';
@@ -37,7 +37,7 @@ export class DatabaseConfigService implements TypeOrmOptionsFactory {
       ],
 
       // Development vs Production Settings
-      synchronize: this.configService.get('DATABASE_SYNCHRONIZE', false),
+      synchronize: false, // Always false when using migrations
       logging: this.configService.get('DATABASE_LOGGING', !isProduction),
       autoLoadEntities: this.configService.get('DATABASE_AUTO_LOAD_ENTITIES', true),
 

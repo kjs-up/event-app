@@ -13,21 +13,7 @@ import { User } from '../../users/entities/user.entity';
 import { FoundationTemplate } from './foundation-template.entity';
 import { EventApproval } from './event-approval.entity';
 
-export enum EventType {
-  TRAINING = 'training',
-  SEMINAR = 'seminar',
-  CONCERT = 'concert',
-  ENTERTAINMENT = 'entertainment',
-  FOUNDATION = 'foundation',
-}
-
-export enum EventStatus {
-  DRAFT = 'draft',
-  PENDING_APPROVAL = 'pending_approval',
-  APPROVED = 'approved',
-  REJECTED = 'rejected',
-  ARCHIVED = 'archived',
-}
+import { EventType, EventStatus } from '../enums/event.enums';
 
 @Entity('event_projects')
 @Index(['status', 'createdAt'])
@@ -43,6 +29,7 @@ export class EventProject {
   description: string;
 
   @Column({
+    name: 'event_type',
     type: 'enum',
     enum: EventType,
   })

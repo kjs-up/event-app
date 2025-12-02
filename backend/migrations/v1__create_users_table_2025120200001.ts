@@ -1,9 +1,13 @@
-import { MigrationInterface, QueryRunner, Table, Index } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table, TableIndex } from 'typeorm';
 
-export class CreateUsersTable1701436800001 implements MigrationInterface {
-  name = 'CreateUsersTable1701436800001';
+export class v1__create_users_table_2025120200001 implements MigrationInterface {
+  name = 'v1__create_users_table_2025120200001';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // Enable required extensions
+    await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
+    await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "citext"`);
+
     // Create ENUM types if they don't exist
     await queryRunner.query(`
       DO $$
@@ -99,7 +103,7 @@ export class CreateUsersTable1701436800001 implements MigrationInterface {
     // Create indexes
     await queryRunner.createIndex(
       'users',
-      new Index({
+      new TableIndex({
         name: 'idx_users_email',
         columnNames: ['email'],
         isUnique: true,
@@ -108,7 +112,7 @@ export class CreateUsersTable1701436800001 implements MigrationInterface {
 
     await queryRunner.createIndex(
       'users',
-      new Index({
+      new TableIndex({
         name: 'idx_users_role_active',
         columnNames: ['role', 'is_active'],
       }),
@@ -116,7 +120,7 @@ export class CreateUsersTable1701436800001 implements MigrationInterface {
 
     await queryRunner.createIndex(
       'users',
-      new Index({
+      new TableIndex({
         name: 'idx_users_deleted_at',
         columnNames: ['deleted_at'],
       }),
@@ -142,12 +146,31 @@ export class CreateUsersTable1701436800001 implements MigrationInterface {
     // Insert default admin user (password: Admin123!)
     await queryRunner.query(`
       INSERT INTO users (email, password_hash, first_name, last_name, role, is_active, email_verified)
-      VALUES (
+      VALUES 
+      (
         'admin@eventplatform.com',
         '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VDmS6bMoy', -- Admin123!
         'System',
         'Administrator',
         'admin',
+        true,
+        true
+      ),
+      (
+        'maker@eventplatform.com',
+        '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VDmS6bMoy', -- Admin123!
+        'Event',
+        'Maker',
+        'maker',
+        true,
+        true
+      ),
+      (
+        'approver@eventplatform.com',
+        '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VDmS6bMoy', -- Admin123!
+        'Event',
+        'Approver',
+        'approver',
         true,
         true
       )

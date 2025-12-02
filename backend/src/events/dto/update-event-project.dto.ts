@@ -1,7 +1,7 @@
 import { PartialType, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsOptional, IsString, IsDateString } from 'class-validator';
 import { CreateEventProjectDto } from './create-event-project.dto';
-import { EventStatus } from '../entities/event-project.entity';
+import { EventStatus } from '../enums/event.enums';
 
 export class UpdateEventProjectDto extends PartialType(CreateEventProjectDto) {
   @ApiPropertyOptional({

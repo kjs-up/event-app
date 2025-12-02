@@ -7,7 +7,8 @@ import {
   OneToMany,
   Index,
 } from 'typeorm';
-import { EventProject, EventType } from './event-project.entity';
+import { EventProject } from './event-project.entity';
+import { EventType } from '../enums/event.enums';
 
 @Entity('foundation_templates')
 @Index(['eventType', 'isActive'])

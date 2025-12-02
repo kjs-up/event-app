@@ -6,7 +6,7 @@ import { Redis } from 'ioredis';
 export class RedisService implements OnModuleInit, OnModuleDestroy {
   private client: Redis;
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) { }
 
   async onModuleInit() {
     await this.connect();
@@ -23,16 +23,20 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     const redisPassword = this.configService.get<string>('REDIS_PASSWORD');
     const redisDb = this.configService.get<number>('REDIS_DB', 0);
 
+    const commonOptions = {
+      lazyConnect: true,
+      maxRetriesPerRequest: 3,
+    };
+
     if (redisUrl) {
-      this.client = new Redis(redisUrl);
+      this.client = new Redis(redisUrl, commonOptions);
     } else {
       this.client = new Redis({
         host: redisHost,
         port: redisPort,
         password: redisPassword || undefined,
         db: redisDb,
-        maxRetriesPerRequest: 3,
-        lazyConnect: true,
+        ...commonOptions,
       });
     }
 
@@ -48,7 +52,9 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       console.log('Redis client disconnected');
     });
 
-    await this.client.connect();
+    if (this.client.status === 'wait' || this.client.status === 'close') {
+      await this.client.connect();
+    }
   }
 
   private async disconnect(): Promise<void> {

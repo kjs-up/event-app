@@ -4,8 +4,8 @@ import { config } from 'dotenv';
 import { join } from 'path';
 
 // Load environment variables
-config({ path: join(__dirname, '../../.env') });
-config({ path: join(__dirname, '../../.env.local') });
+config({ path: join(process.cwd(), '.env') });
+config({ path: join(process.cwd(), '.env.local') });
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -18,19 +18,18 @@ export const AppDataSource = new DataSource({
 
   // Entity Configuration
   entities: [
-    join(__dirname, '../**/*.entity{.ts,.js}'),
-    join(__dirname, '../../../shared/types/entities/**/*.entity{.ts,.js}'),
+    join(process.cwd(), 'src/**/*.entity{.ts,.js}'),
+    join(process.cwd(), '../shared/types/entities/**/*.entity{.ts,.js}'),
   ],
 
   // Migration Configuration
   migrations: [
-    join(__dirname, '../migrations/*{.ts,.js}'),
-    join(__dirname, '../../../shared/migrations/migrations/*{.ts,.js}'),
+    join(process.cwd(), 'migrations/{[0-9]*,v[0-9]*}*{.ts,.js}'),
   ],
 
   // Subscriber Configuration
   subscribers: [
-    join(__dirname, '../**/*.subscriber{.ts,.js}'),
+    join(process.cwd(), 'src/**/*.subscriber{.ts,.js}'),
   ],
 
   // Development Settings
