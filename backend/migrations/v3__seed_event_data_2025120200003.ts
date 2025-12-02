@@ -14,8 +14,8 @@ export class v3__seed_event_data_2025120200003 implements MigrationInterface {
         `);
 
         // Get user IDs (assuming they exist from previous migration)
-        const users = await queryRunner.query(`SELECT id, email FROM users WHERE email IN ('maker@eventplatform.com', 'approver@eventplatform.com')`);
-        const maker = users.find((u: any) => u.email === 'maker@eventplatform.com');
+        const users = await queryRunner.query(`SELECT id, email FROM users WHERE email IN ('user@eventplatform.com', 'approver@eventplatform.com')`);
+        const maker = users.find((u: any) => u.email === 'user@eventplatform.com');
         const approver = users.find((u: any) => u.email === 'approver@eventplatform.com');
 
         if (maker && approver) {

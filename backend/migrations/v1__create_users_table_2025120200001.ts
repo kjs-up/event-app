@@ -13,7 +13,7 @@ export class v1__create_users_table_2025120200001 implements MigrationInterface 
       DO $$
       BEGIN
         IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role_enum') THEN
-          CREATE TYPE user_role_enum AS ENUM ('maker', 'approver', 'admin');
+          CREATE TYPE user_role_enum AS ENUM ('user', 'maker', 'approver', 'admin');
         END IF;
       END
       $$;
@@ -58,7 +58,7 @@ export class v1__create_users_table_2025120200001 implements MigrationInterface 
           {
             name: 'role',
             type: 'user_role_enum',
-            default: "'maker'",
+            default: "'user'",
             isNullable: false,
           },
           {
@@ -149,7 +149,7 @@ export class v1__create_users_table_2025120200001 implements MigrationInterface 
       VALUES 
       (
         'admin@eventplatform.com',
-        '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VDmS6bMoy', -- Admin123!
+        '$2a$12$eWBhzNMvxFXlzbwXwYqtXuSaEgSbDkZeJifkq7Pfnd4/lEwSad2xa', -- Admin123!
         'System',
         'Administrator',
         'admin',
@@ -157,8 +157,17 @@ export class v1__create_users_table_2025120200001 implements MigrationInterface 
         true
       ),
       (
+        'user@eventplatform.com',
+        '$2a$12$eWBhzNMvxFXlzbwXwYqtXuSaEgSbDkZeJifkq7Pfnd4/lEwSad2xa', -- Admin123!
+        'Event',
+        'User',
+        'user',
+        true,
+        true
+      ),
+      (
         'maker@eventplatform.com',
-        '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VDmS6bMoy', -- Admin123!
+        '$2a$12$eWBhzNMvxFXlzbwXwYqtXuSaEgSbDkZeJifkq7Pfnd4/lEwSad2xa', -- Admin123!
         'Event',
         'Maker',
         'maker',
@@ -167,7 +176,7 @@ export class v1__create_users_table_2025120200001 implements MigrationInterface 
       ),
       (
         'approver@eventplatform.com',
-        '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VDmS6bMoy', -- Admin123!
+        '$2a$12$eWBhzNMvxFXlzbwXwYqtXuSaEgSbDkZeJifkq7Pfnd4/lEwSad2xa', -- Admin123!
         'Event',
         'Approver',
         'approver',

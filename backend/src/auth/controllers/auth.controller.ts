@@ -24,14 +24,17 @@ import { RefreshTokenDto, ChangePasswordDto, UserResponseDto } from '../dto/auth
 import { AuthResponseDto } from '../dto/auth-response.dto';
 import { error } from 'console';
 
+import { Public } from '../decorators/public.decorator';
+
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly jwtAuthService: JwtAuthService,
-  ) {}
+  ) { }
 
+  @Public()
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Register a new user' })
@@ -61,6 +64,7 @@ export class AuthController {
     };
   }
 
+  @Public()
   @Post('login')
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
@@ -73,10 +77,9 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
   async login(@Body() loginDto: LoginDto): Promise<AuthResponseDto> {
     const user = await this.authService.findByEmail(loginDto.email.toLocaleLowerCase());
-
-    if(!user) {
+    if (!user) {
       // TO DO : log error email not found
-      throw error
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     const tokens = await this.jwtAuthService.generateTokens(user);
@@ -169,7 +172,7 @@ export class AuthController {
   ): Promise<{ message: string }> {
     const user = await this.authService.findByEmail(changePasswordDto.email.toLocaleLowerCase());
 
-    if(!user) {
+    if (!user) {
       // TO DO : log error email not found
       throw error
     }

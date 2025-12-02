@@ -21,13 +21,13 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly passwordService: PasswordService,
-  ) {}
+  ) { }
 
   /**
    * Register a new user
    */
   async register(registerDto: RegisterDto): Promise<User> {
-    const { email, password, firstName, lastName, role = UserRole.MAKER } = registerDto;
+    const { email, password, firstName, lastName, role = UserRole.USER } = registerDto;
 
     // Check if user already exists
     const existingUser = await this.userRepository.findOne({

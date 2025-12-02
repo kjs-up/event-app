@@ -10,6 +10,7 @@ import {
 import { Exclude } from 'class-transformer';
 
 export enum UserRole {
+  USER = 'user',
   MAKER = 'maker',
   APPROVER = 'approver',
   ADMIN = 'admin',
@@ -58,7 +59,7 @@ export class User {
   @Column({
     type: 'enum',
     enum: UserRole,
-    default: UserRole.MAKER,
+    default: UserRole.USER,
     nullable: false,
   })
   role: UserRole;
@@ -129,6 +130,10 @@ export class User {
 
   isApprover(): boolean {
     return this.role === UserRole.APPROVER;
+  }
+
+  isUser(): boolean {
+    return this.role === UserRole.USER;
   }
 
   isMaker(): boolean {

@@ -7,7 +7,8 @@ export class PasswordService {
   private readonly saltRounds: number;
 
   constructor(private readonly configService: ConfigService) {
-    this.saltRounds = this.configService.get<number>('BCRYPT_SALT_ROUNDS', 12);
+    const rounds = this.configService.get<number>('BCRYPT_SALT_ROUNDS', 12);
+    this.saltRounds = typeof rounds === 'string' ? parseInt(rounds, 10) : rounds;
   }
 
   /**

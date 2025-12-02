@@ -39,12 +39,11 @@ export class RegisterDto {
 
   @ApiProperty({
     enum: UserRole,
-    example: UserRole.MAKER,
+    default: UserRole.USER,
     description: 'User role',
     required: false,
-    default: UserRole.MAKER,
   })
+  @IsEnum(UserRole)
   @IsOptional()
-  @IsEnum(UserRole, { message: 'Role must be a valid user role' })
-  role?: UserRole = UserRole.MAKER;
+  role?: UserRole = UserRole.USER;
 }
