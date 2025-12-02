@@ -16,7 +16,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
 
-import { User } from '../entities/user.entity';
+import { User } from '../users/entities/user.entity';
 
 @Module({
   imports: [
