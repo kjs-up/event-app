@@ -1,0 +1,41 @@
+{
+  "name": "event-management-platform",
+  "version": "1.0.0",
+  "description": "Comprehensive event management platform with microservices architecture",
+  "private": true,
+  "workspaces": [
+    "services/*",
+    "frontend/*",
+    "shared/*"
+  ],
+  "scripts": {
+    "install:all": "pnpm install",
+    "dev": "concurrently \"pnpm dev:backend\" \"pnpm dev:frontend\"",
+    "dev:backend": "pnpm --filter \"services/*\" dev",
+    "dev:frontend": "pnpm --filter \"frontend/*\" dev",
+    "build": "pnpm --recursive build",
+    "test": "pnpm --recursive test",
+    "lint": "pnpm --recursive lint",
+    "format": "pnpm --recursive format",
+    "clean": "pnpm --recursive clean",
+    "docker:dev": "docker-compose -f infrastructure/docker/docker-compose.dev.yml up -d",
+    "docker:down": "docker-compose -f infrastructure/docker/docker-compose.dev.yml down",
+    "migrate": "pnpm --filter @event-platform/gateway migrate",
+    "migrate:rollback": "pnpm --filter @event-platform/gateway migrate:rollback",
+    "seed": "pnpm --filter @event-platform/gateway seed"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "concurrently": "^8.2.2",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.0",
+  "keywords": ["event-management", "microservices", "nestjs", "react", "typescript"],
+  "author": "Event Platform Team",
+  "license": "MIT"
+}

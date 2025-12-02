@@ -4,7 +4,18 @@
       "Bash(.specify/scripts/bash/setup-plan.sh:*)",
       "Bash(.specify/scripts/bash/create-new-feature.sh:*)",
       "Bash(.specify/scripts/bash/update-agent-context.sh:*)",
-      "Bash(.specify/scripts/bash/check-prerequisites.sh:*)"
+      "Bash(.specify/scripts/bash/check-prerequisites.sh:*)",
+      "Bash(git fetch:*)",
+      "Bash(mkdir:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(tree:*)",
+      "Bash(npm install:*)",
+      "Bash(npm update:*)",
+      "Bash(npm audit)",
+      "Bash(npm audit fix:*)",
+      "Bash(npm view:*)",
+      "Bash(docker run:*)",
+      "Bash(npm run build)"
     ],
     "deny": [],
     "ask": []
