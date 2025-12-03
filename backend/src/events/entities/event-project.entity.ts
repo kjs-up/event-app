@@ -12,6 +12,7 @@ import {
 import { User } from '../../users/entities/user.entity';
 import { FoundationTemplate } from './foundation-template.entity';
 import { EventApproval } from './event-approval.entity';
+import { EventBatch } from './event-batch.entity';
 
 import { EventType, EventStatus } from '../enums/event.enums';
 
@@ -93,6 +94,9 @@ export class EventProject {
 
   @OneToMany(() => EventApproval, approval => approval.eventProject)
   approvals: EventApproval[];
+
+  @OneToMany(() => EventBatch, batch => batch.eventProject)
+  batches: EventBatch[];
 
   // Virtual properties
   get fullName(): string {

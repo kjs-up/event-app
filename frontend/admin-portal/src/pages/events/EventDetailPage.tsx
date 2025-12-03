@@ -156,6 +156,53 @@ export function EventDetailPage() {
               </Grid>
             </Grid>
           </Paper>
+
+          {/* Sessions / Batches */}
+          <Paper className="p-6">
+            <Box className="flex justify-between items-center mb-4">
+              <Typography variant="h6" className="font-semibold">Sessions</Typography>
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => navigate(`/events/${id}/register`)}
+              >
+                View Registration Page
+              </Button>
+            </Box>
+
+            {event.batches && event.batches.length > 0 ? (
+              <Grid container spacing={2}>
+                {event.batches.map((batch: any) => (
+                  <Grid item xs={12} key={batch.id}>
+                    <Card variant="outlined">
+                      <CardContent>
+                        <Box className="flex justify-between items-center mb-2">
+                          <Typography variant="subtitle1" className="font-medium">
+                            {batch.name}
+                          </Typography>
+                          <Chip
+                            label={batch.isAvailable ? 'Open' : 'Closed'}
+                            color={batch.isAvailable ? 'success' : 'default'}
+                            size="small"
+                          />
+                        </Box>
+                        <Typography variant="body2" color="textSecondary">
+                          {new Date(batch.startTime).toLocaleString()} - {new Date(batch.endTime).toLocaleString()}
+                        </Typography>
+                        <Box mt={2}>
+                          <Typography variant="caption" display="block">
+                            Capacity: {batch.currentRegistrations} / {batch.capacity}
+                          </Typography>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            ) : (
+              <Typography color="textSecondary">No sessions configured.</Typography>
+            )}
+          </Paper>
         </Grid>
 
         {/* Sidebar Info */}

@@ -99,25 +99,25 @@
 
 ### Implementation for User Story 2
 
-- [ ] T041 [P] [US2] Create EventBatch entity in backend/src/events/entities/event-batch.entity.ts
-- [ ] T042 [P] [US2] Create Participant entity in backend/src/registration/entities/participant.entity.ts
-- [ ] T043 [P] [US2] Create Registration entity in backend/src/registration/entities/registration.entity.ts
-- [ ] T044 [US2] Create EventBatchService with batch management in backend/src/events/services/event-batch.service.ts
-- [ ] T045 [US2] Create RegistrationService with registration logic in backend/src/registration/services/registration.service.ts
-- [ ] T046 [US2] Create ParticipantService with participant management in backend/src/registration/services/participant.service.ts
-- [ ] T047 [US2] Implement RegistrationController with public endpoints in backend/src/registration/controllers/registration.controller.ts
-- [ ] T048 [US2] Implement capacity tracking with Redis cache in backend/src/events/services/capacity.service.ts
-- [ ] T049 [US2] Setup WebSocket gateway for real-time capacity updates in backend/src/gateway/capacity.gateway.ts
-- [ ] T050 [US2] Add registration confirmation email service in backend/src/notifications/registration-notification.service.ts
-- [ ] T051 [US2] Create waitlist management service in backend/src/registration/services/waitlist.service.ts
-- [ ] T052 [P] [US2] Create EventRegistration page component in frontend/src/pages/registration/EventRegistration.tsx
-- [ ] T053 [P] [US2] Create RegistrationForm component in frontend/src/components/registration/RegistrationForm.tsx
-- [ ] T054 [P] [US2] Create CapacityTracker component in frontend/src/components/events/CapacityTracker.tsx
-- [ ] T055 [P] [US2] Create WalkInRegistration staff interface in frontend/src/pages/registration/WalkInRegistration.tsx
-- [ ] T056 [P] [US2] Create RegistrationList management component in frontend/src/components/registration/RegistrationList.tsx
-- [ ] T057 [US2] Create registration API service client in frontend/src/services/registration.service.ts
-- [ ] T058 [US2] Implement WebSocket hook for real-time capacity in frontend/src/hooks/useRealTimeCapacity.ts
-- [ ] T059 [US2] Add event batch management to EventDetail page in frontend/src/pages/events/EventDetail.tsx
+- [x] T041 [P] [US2] Create EventBatch entity in backend/src/events/entities/event-batch.entity.ts
+- [x] T042 [P] [US2] Create Participant entity in backend/src/registration/entities/participant.entity.ts
+- [x] T043 [P] [US2] Create Registration entity in backend/src/registration/entities/registration.entity.ts
+- [x] T044 [US2] Create EventBatchService with batch management in backend/src/events/services/event-batch.service.ts
+- [x] T045 [US2] Create RegistrationService with registration logic in backend/src/registration/services/registration.service.ts
+- [x] T046 [US2] Create ParticipantService with participant management in backend/src/registration/services/participant.service.ts
+- [x] T047 [US2] Implement RegistrationController with public endpoints in backend/src/registration/controllers/registration.controller.ts
+- [x] T048 [US2] Implement capacity tracking with Redis cache in backend/src/events/services/capacity.service.ts
+- [x] T049 [US2] Setup WebSocket gateway for real-time capacity updates in backend/src/gateway/capacity.gateway.ts
+- [x] T050 [US2] Add registration confirmation email service in backend/src/notifications/registration-notification.service.ts
+- [x] T051 [US2] Create waitlist management service in backend/src/registration/services/waitlist.service.ts
+- [x] T052 [P] [US2] Create EventRegistration page component in frontend/src/pages/registration/EventRegistration.tsx
+- [x] T053 [P] [US2] Create RegistrationForm component in frontend/src/components/registration/RegistrationForm.tsx
+- [x] T054 [P] [US2] Create CapacityTracker component in frontend/src/components/events/CapacityTracker.tsx
+- [x] T055 [P] [US2] Create WalkInRegistration staff interface in frontend/src/pages/registration/WalkInRegistration.tsx
+- [x] T056 [P] [US2] Create RegistrationList management component in frontend/src/components/registration/RegistrationList.tsx
+- [x] T057 [US2] Create registration API service client in frontend/src/services/registration.service.ts
+- [x] T058 [US2] Implement WebSocket hook for real-time capacity in frontend/src/hooks/useRealTimeCapacity.ts
+- [x] T059 [US2] Add event batch management to EventDetail page in frontend/src/pages/events/EventDetail.tsx
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 

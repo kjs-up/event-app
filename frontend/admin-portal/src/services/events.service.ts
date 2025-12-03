@@ -22,6 +22,21 @@ export interface EventProject {
   approver?: User;
   foundationTemplate?: FoundationTemplate;
   approvals?: EventApproval[];
+  batches?: EventBatch[];
+}
+
+export interface EventBatch {
+  id: string;
+  eventProjectId: string;
+  name: string;
+  startTime: string;
+  endTime: string;
+  capacity: number;
+  currentRegistrations: number;
+  isAvailable: boolean;
+  price?: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface EventApproval {

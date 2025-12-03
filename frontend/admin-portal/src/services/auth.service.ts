@@ -10,6 +10,11 @@ export class AuthService {
     return api.post<AuthResponse>(`${this.basePath}/login`, loginData);
   }
 
+  // Register user
+  async register(data: any): Promise<AuthResponse> {
+    return api.post<AuthResponse>(`${this.basePath}/register`, data);
+  }
+
   // Get current user profile
   async getCurrentUser(): Promise<User> {
     return api.get<User>(`${this.basePath}/profile`);

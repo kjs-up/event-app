@@ -9,12 +9,14 @@ import { Layout } from './components/layout/Layout';
 
 // Pages
 import { LoginPage } from './pages/auth/LoginPage';
+import { RegisterPage } from './pages/auth/RegisterPage';
 import { DashboardPage } from './pages/dashboard/DashboardPage';
 import { EventsPage } from './pages/events/EventsPage';
 import { EventCreatePage } from './pages/events/EventCreatePage';
 import { EventDetailPage } from './pages/events/EventDetailPage';
 import { ApprovalQueuePage } from './pages/events/ApprovalQueuePage';
 import { ApprovalReviewPage } from './pages/events/ApprovalReviewPage';
+import { EventRegistration } from './pages/registration/EventRegistration';
 
 // ... (imports)
 
@@ -47,6 +49,7 @@ function App() {
             <Routes>
               {/* Public routes */}
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
 
               {/* Protected routes */}
               <Route path="/" element={<ProtectedRoute />}>
@@ -60,10 +63,11 @@ function App() {
                   <Route path="events" element={<EventsPage />} />
                   <Route path="events/create" element={<EventCreatePage />} />
                   <Route path="events/:id" element={<EventDetailPage />} />
+                  <Route path="/events/:id/register" element={<EventRegistration />} />
 
                   {/* Approval Queue */}
                   <Route path="approvals" element={<ApprovalQueuePage />} />
-                  <Route path="events/approvals/:id" element={<ApprovalReviewPage />} />
+                  <Route path="/approvals/:id" element={<ApprovalReviewPage />} />
 
                   {/* User Management */}
                   <Route path="users" element={<UsersPage />} />

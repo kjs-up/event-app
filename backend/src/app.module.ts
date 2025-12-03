@@ -17,6 +17,9 @@ import { EventsModule } from './events/events.module';
 // Dashboard Module
 import { DashboardModule } from './dashboard/dashboard.module';
 
+// Registration Module
+import { RegistrationModule } from './registration/registration.module';
+
 // Shared Modules
 import { LoggerModule } from './shared/logger/logger.module';
 import { CacheModule } from './cache/cache.module';
@@ -50,6 +53,7 @@ import { LoggerMiddleware } from './shared/middleware/logger.middleware';
     // Feature modules
     EventsModule,
     DashboardModule,
+    RegistrationModule,
 
     // Shared modules
     LoggerModule,

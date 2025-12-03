@@ -193,7 +193,7 @@ export class EventProjectController {
     @Param('id', ParseUUIDPipe) id: string,
     @Request() req: any,
   ): Promise<EventProject> {
-    const eventProject = await this.eventProjectService.findOne(id, ['approvals']);
+    const eventProject = await this.eventProjectService.findOne(id, ['approvals', 'batches']);
 
     // Non-admin users can only view their own events or approved events
     if (req.user.role !== UserRole.ADMIN &&
