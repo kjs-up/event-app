@@ -44,7 +44,7 @@ async function bootstrap() {
 
   // Rate limiting
   const rateLimitWindowMs = configService.get<number>('RATE_LIMIT_WINDOW_MS', 900000); // 15 minutes
-  const rateLimitMaxRequests = configService.get<number>('RATE_LIMIT_MAX_REQUESTS', 100);
+  const rateLimitMaxRequests = configService.get<number>('RATE_LIMIT_MAX_REQUESTS', 1000);
 
   app.use(rateLimit({
     windowMs: rateLimitWindowMs,

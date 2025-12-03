@@ -1,4 +1,5 @@
 import React from 'react';
+import { useQuery } from '@tanstack/react-query';
 import {
   Box,
   Paper,
@@ -16,6 +17,7 @@ import {
   Avatar,
   TextField,
   MenuItem,
+  CircularProgress,
 } from '@mui/material';
 import {
   People as PeopleIcon,
@@ -42,23 +44,50 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts';
-
-const performanceData = [
-  { time: '00:00', cpu: 45, memory: 32, response: 1.2 },
-  { time: '04:00', cpu: 38, memory: 28, response: 0.8 },
-  { time: '08:00', cpu: 52, memory: 45, response: 2.1 },
-  { time: '12:00', cpu: 89, memory: 67, response: 3.4 },
-  { time: '16:00', cpu: 76, memory: 58, response: 2.8 },
-  { time: '20:00', cpu: 63, memory: 49, response: 1.9 },
-  { time: '24:00', cpu: 48, memory: 35, response: 1.1 },
-];
-
-const recentUsers = [
-  { id: 1, name: 'John Smith', email: 'john@company.com', role: 'Admin', org: 'TechCorp Inc.', lastLogin: '2 hours ago', status: 'Active' },
-  { id: 2, name: 'Sarah Johnson', email: 'sarah@events.com', role: 'Manager', org: 'Event Solutions', lastLogin: '1 day ago', status: 'Active' },
-];
+import { dashboardService } from '../../services/dashboard.service';
 
 export function DashboardPage() {
+  const { data: stats, isLoading: statsLoading } = useQuery({
+    queryKey: ['dashboard-stats'],
+    queryFn: dashboardService.getStats,
+  });
+
+  const { data: performanceData, isLoading: perfLoading } = useQuery({
+    queryKey: ['dashboard-performance'],
+    queryFn: dashboardService.getPerformance,
+  });
+
+  const { data: recentUsers, isLoading: usersLoading } = useQuery({
+    queryKey: ['dashboard-recent-users'],
+    queryFn: dashboardService.getRecentUsers,
+  });
+
+  if (statsLoading || perfLoading || usersLoading) {
+    return (
+      <Box className="flex justify-center items-center h-screen">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (!stats || !performanceData || !recentUsers) {
+    return (
+      <Box className="p-6">
+        <Typography color="error" variant="h6">
+          Error loading dashboard data. Please try again later.
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => window.location.reload()}
+          className="mt-4"
+        >
+          Retry
+        </Button>
+      </Box>
+    );
+  }
+
   return (
     <Box className="p-6 max-w-7xl mx-auto">
       <Box className="mb-8">
@@ -80,9 +109,9 @@ export function DashboardPage() {
                 <Box className="flex justify-between items-start">
                   <Box>
                     <Typography variant="body2" color="textSecondary">Active Users</Typography>
-                    <Typography variant="h5" className="font-bold my-1">8,432</Typography>
+                    <Typography variant="h5" className="font-bold my-1">{stats?.activeUsers.count.toLocaleString()}</Typography>
                     <Typography variant="caption" className="text-green-600 flex items-center">
-                      <ArrowUpIcon fontSize="small" className="mr-1" /> +12% today
+                      <ArrowUpIcon fontSize="small" className="mr-1" /> +{stats?.activeUsers.newToday} today
                     </Typography>
                   </Box>
                   <PeopleIcon color="primary" fontSize="large" />
@@ -94,8 +123,8 @@ export function DashboardPage() {
                 <Box className="flex justify-between items-start">
                   <Box>
                     <Typography variant="body2" color="textSecondary">System Health</Typography>
-                    <Typography variant="h5" className="font-bold my-1 text-green-600">99.8%</Typography>
-                    <Typography variant="caption" color="textSecondary">All systems operational</Typography>
+                    <Typography variant="h5" className="font-bold my-1 text-green-600">{stats?.systemHealth.percentage}%</Typography>
+                    <Typography variant="caption" color="textSecondary">{stats?.systemHealth.status}</Typography>
                   </Box>
                   <HealthIcon color="success" fontSize="large" />
                 </Box>
@@ -106,9 +135,9 @@ export function DashboardPage() {
                 <Box className="flex justify-between items-start">
                   <Box>
                     <Typography variant="body2" color="textSecondary">Revenue Today</Typography>
-                    <Typography variant="h5" className="font-bold my-1">$45,320</Typography>
+                    <Typography variant="h5" className="font-bold my-1">${stats?.revenue.amount.toLocaleString()}</Typography>
                     <Typography variant="caption" className="text-green-600 flex items-center">
-                      <ArrowUpIcon fontSize="small" className="mr-1" /> +8.2%
+                      <ArrowUpIcon fontSize="small" className="mr-1" /> +{stats?.revenue.change}%
                     </Typography>
                   </Box>
                   <RevenueIcon className="text-yellow-500" fontSize="large" />
@@ -120,8 +149,10 @@ export function DashboardPage() {
                 <Box className="flex justify-between items-start">
                   <Box>
                     <Typography variant="body2" color="textSecondary">Active Alerts</Typography>
-                    <Typography variant="h5" className="font-bold my-1 text-red-600">3</Typography>
-                    <Typography variant="caption" color="textSecondary">2 medium, 1 low</Typography>
+                    <Typography variant="h5" className="font-bold my-1 text-red-600">{stats?.activeAlerts.count}</Typography>
+                    <Typography variant="caption" color="textSecondary">
+                      {stats?.activeAlerts.details.length} critical
+                    </Typography>
                   </Box>
                   <AlertIcon color="error" fontSize="large" />
                 </Box>
@@ -192,7 +223,7 @@ export function DashboardPage() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {recentUsers.map((user) => (
+                  {recentUsers?.map((user) => (
                     <TableRow key={user.id}>
                       <TableCell>
                         <Box className="flex items-center">
@@ -204,12 +235,12 @@ export function DashboardPage() {
                         </Box>
                       </TableCell>
                       <TableCell>
-                        <Chip label={user.role} size="small" color={user.role === 'Admin' ? 'secondary' : 'primary'} variant="outlined" />
+                        <Chip label={user.role} size="small" color={user.role === 'admin' ? 'secondary' : 'primary'} variant="outlined" />
                       </TableCell>
                       <TableCell>{user.org}</TableCell>
                       <TableCell>{user.lastLogin}</TableCell>
                       <TableCell>
-                        <Chip label={user.status} size="small" color="success" />
+                        <Chip label={user.status} size="small" color={user.status === 'Active' ? 'success' : 'default'} />
                       </TableCell>
                       <TableCell>
                         <IconButton size="small" color="primary"><EditIcon fontSize="small" /></IconButton>
@@ -232,22 +263,15 @@ export function DashboardPage() {
                 <BellIcon className="mr-2 text-red-500" /> System Alerts
               </Typography>
               <Box className="space-y-3">
-                <Box className="flex items-start p-3 bg-red-50 rounded-lg">
-                  <AlertIcon className="text-red-500 mt-1 mr-3" fontSize="small" />
-                  <Box>
-                    <Typography variant="subtitle2" className="text-gray-900">High CPU Usage</Typography>
-                    <Typography variant="caption" className="text-gray-600 block">Database server at 89% capacity</Typography>
-                    <Typography variant="caption" className="text-gray-500">5 minutes ago</Typography>
+                {stats?.activeAlerts.details.map((alert, index) => (
+                  <Box key={index} className={`flex items-start p-3 rounded-lg ${alert.type === 'high' ? 'bg-red-50' : 'bg-yellow-50'}`}>
+                    <AlertIcon className={`${alert.type === 'high' ? 'text-red-500' : 'text-yellow-600'} mt-1 mr-3`} fontSize="small" />
+                    <Box>
+                      <Typography variant="subtitle2" className="text-gray-900">{alert.message}</Typography>
+                      <Typography variant="caption" className="text-gray-500">{alert.time}</Typography>
+                    </Box>
                   </Box>
-                </Box>
-                <Box className="flex items-start p-3 bg-yellow-50 rounded-lg">
-                  <AlertIcon className="text-yellow-600 mt-1 mr-3" fontSize="small" />
-                  <Box>
-                    <Typography variant="subtitle2" className="text-gray-900">Payment Gateway Latency</Typography>
-                    <Typography variant="caption" className="text-gray-600 block">Response times above 2s</Typography>
-                    <Typography variant="caption" className="text-gray-500">15 minutes ago</Typography>
-                  </Box>
-                </Box>
+                ))}
               </Box>
             </Paper>
 

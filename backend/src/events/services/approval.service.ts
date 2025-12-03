@@ -336,6 +336,22 @@ export class ApprovalService {
   }
 
   /**
+   * Get approval by ID
+   */
+  async getApprovalById(approvalId: string): Promise<EventApproval> {
+    const approval = await this.approvalRepository.findOne({
+      where: { id: approvalId },
+      relations: ['eventProject', 'submitter', 'approver'],
+    });
+
+    if (!approval) {
+      throw new NotFoundException('Approval not found');
+    }
+
+    return approval;
+  }
+
+  /**
    * Get approval statistics
    */
   async getApprovalStats(

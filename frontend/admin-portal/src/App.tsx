@@ -36,57 +36,61 @@ const queryClient = new QueryClient({
   },
 });
 
+import { ErrorBoundary } from './components/common/ErrorBoundary';
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <AuthProvider>
-          <Routes>
-            {/* Public routes */}
-            <Route path="/login" element={<LoginPage />} />
+      <AuthProvider>
+        <ErrorBoundary>
+          <BrowserRouter>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/login" element={<LoginPage />} />
 
-            {/* Protected routes */}
-            <Route path="/" element={<ProtectedRoute />}>
-              <Route path="/" element={<Layout />}>
-                <Route index element={<Navigate to="/dashboard" replace />} />
+              {/* Protected routes */}
+              <Route path="/" element={<ProtectedRoute />}>
+                <Route path="/" element={<Layout />}>
+                  <Route index element={<Navigate to="/dashboard" replace />} />
 
-                {/* Dashboard */}
-                <Route path="dashboard" element={<DashboardPage />} />
+                  {/* Dashboard */}
+                  <Route path="dashboard" element={<DashboardPage />} />
 
-                {/* Events Management */}
-                <Route path="events" element={<EventsPage />} />
-                <Route path="events/create" element={<EventCreatePage />} />
-                <Route path="events/:id" element={<EventDetailPage />} />
+                  {/* Events Management */}
+                  <Route path="events" element={<EventsPage />} />
+                  <Route path="events/create" element={<EventCreatePage />} />
+                  <Route path="events/:id" element={<EventDetailPage />} />
 
-                {/* Approval Queue */}
-                <Route path="approvals" element={<ApprovalQueuePage />} />
-                <Route path="events/approvals/:id" element={<ApprovalReviewPage />} />
+                  {/* Approval Queue */}
+                  <Route path="approvals" element={<ApprovalQueuePage />} />
+                  <Route path="events/approvals/:id" element={<ApprovalReviewPage />} />
 
-                {/* User Management */}
-                <Route path="users" element={<UsersPage />} />
+                  {/* User Management */}
+                  <Route path="users" element={<UsersPage />} />
 
-                {/* Settings */}
-                <Route path="settings" element={<SettingsPage />} />
+                  {/* Settings */}
+                  <Route path="settings" element={<SettingsPage />} />
+                </Route>
               </Route>
-            </Route>
 
-            {/* 404 Page */}
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
+              {/* 404 Page */}
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
 
-          {/* Global toast notifications */}
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 4000,
-              style: {
-                background: '#363636',
-                color: '#fff',
-              },
-            }}
-          />
-        </AuthProvider>
-      </BrowserRouter>
+            {/* Global toast notifications */}
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
+                style: {
+                  background: '#363636',
+                  color: '#fff',
+                },
+              }}
+            />
+          </BrowserRouter>
+        </ErrorBoundary>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

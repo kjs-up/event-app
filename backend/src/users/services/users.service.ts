@@ -9,7 +9,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async findAll(): Promise<User[]> {
     return this.usersRepository.find({
@@ -75,5 +75,21 @@ export class UsersService {
     const user = await this.findById(id);
 
     await this.usersRepository.softDelete(id);
+  }
+
+  async getStats(): Promise<{ total: number; newToday: number }> {
+    const total = await this.usersRepository.count({
+      where: { deletedAt: null },
+    });
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const newToday = await this.usersRepository
+      .createQueryBuilder('user')
+      .where('user.createdAt >= :today', { today })
+      .getCount();
+
+    return { total, newToday };
   }
 }

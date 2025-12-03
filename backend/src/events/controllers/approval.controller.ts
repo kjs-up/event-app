@@ -41,7 +41,7 @@ import { EventApproval, ApprovalStatus } from '../entities/event-approval.entity
 @Controller('approvals')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class ApprovalController {
-  constructor(private readonly approvalService: ApprovalService) {}
+  constructor(private readonly approvalService: ApprovalService) { }
 
   @Post('events/:eventId/submit')
   @ApiOperation({
@@ -211,6 +211,33 @@ export class ApprovalController {
     @Param('eventId', ParseUUIDPipe) eventId: string,
   ): Promise<EventApproval[]> {
     return await this.approvalService.getApprovalHistory(eventId);
+  }
+
+  @Get(':id')
+  @ApiOperation({
+    summary: 'Get approval by ID',
+    description: 'Retrieves a specific approval by its ID.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'Approval UUID',
+    format: 'uuid',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Approval retrieved successfully',
+    type: EventApproval,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Approval not found',
+  })
+  @Roles(UserRole.APPROVER, UserRole.ADMIN)
+  async getApprovalById(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<EventApproval> {
+    return await this.approvalService.getApprovalById(id);
   }
 
   @Post(':id/approve')

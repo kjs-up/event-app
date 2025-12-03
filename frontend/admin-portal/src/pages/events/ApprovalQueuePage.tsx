@@ -20,8 +20,11 @@ import {
 import { eventsService, EventApproval } from '../../services/events.service';
 import { format } from 'date-fns';
 
+import { useAuth } from '../../contexts/AuthContext';
+
 export function ApprovalQueuePage() {
   const navigate = useNavigate();
+  const { user, isLoading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [approvals, setApprovals] = useState<EventApproval[]>([]);
@@ -129,6 +132,14 @@ export function ApprovalQueuePage() {
       ),
     },
   ];
+
+  if (authLoading) {
+    return (
+      <Box className="flex justify-center py-12">
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Box className="p-6">

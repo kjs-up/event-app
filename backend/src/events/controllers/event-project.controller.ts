@@ -142,10 +142,15 @@ export class EventProjectController {
       limit: Math.min(query.limit || 10, 100), // Cap at 100 items per page
     };
 
-    // Non-admin users can only see their own events by default
-    if (req.user.role !== UserRole.ADMIN && !query.createdBy) {
-      options.createdBy = req.user.userId;
-    }
+    // Allow all users to see all events
+    // if (req.user.role !== UserRole.ADMIN && !query.createdBy) {
+    //   if (query.status === EventStatus.APPROVED) {
+    //     // Allow viewing all approved events
+    //   } else {
+    //     // Otherwise restrict to own events
+    //     options.createdBy = req.user.userId;
+    //   }
+    // }
 
     return await this.eventProjectService.findAll(options);
   }

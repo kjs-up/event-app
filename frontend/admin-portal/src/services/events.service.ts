@@ -136,32 +136,27 @@ export const eventProjectsApi = {
       }
     });
 
-    const response = await api.get(`/event-projects?${params.toString()}`);
-    return response.data;
+    return await api.get(`/event-projects?${params.toString()}`);
   },
 
   // Get event project by ID
   async getById(id: string): Promise<EventProject> {
-    const response = await api.get(`/event-projects/${id}`);
-    return response.data;
+    return await api.get(`/event-projects/${id}`);
   },
 
   // Create new event project
   async create(data: CreateEventProjectDto): Promise<EventProject> {
-    const response = await api.post('/event-projects', data);
-    return response.data;
+    return await api.post('/event-projects', data);
   },
 
   // Update event project
   async update(id: string, data: UpdateEventProjectDto): Promise<EventProject> {
-    const response = await api.put(`/event-projects/${id}`, data);
-    return response.data;
+    return await api.put(`/event-projects/${id}`, data);
   },
 
   // Submit event project for approval
   async submitForApproval(id: string, comments?: string): Promise<EventProject> {
-    const response = await api.post(`/event-projects/${id}/submit`, { comments });
-    return response.data;
+    return await api.post(`/event-projects/${id}/submit`, { comments });
   },
 
   // Delete event project
@@ -171,17 +166,20 @@ export const eventProjectsApi = {
 
   // Get event project statistics
   async getStats(): Promise<EventProjectStats> {
-    const response = await api.get('/event-projects/stats');
-    return response.data;
+    return await api.get('/event-projects/stats');
   },
 };
 
 // Approvals API
 export const approvalsApi = {
+  // Get approval by ID
+  async getById(id: string): Promise<EventApproval> {
+    return await api.get(`/approvals/${id}`);
+  },
+
   // Submit event for approval
   async submitEvent(eventId: string, comments?: string): Promise<EventApproval> {
-    const response = await api.post(`/approvals/events/${eventId}/submit`, { comments });
-    return response.data;
+    return await api.post(`/approvals/events/${eventId}/submit`, { comments });
   },
 
   // Get approval queue
@@ -193,35 +191,30 @@ export const approvalsApi = {
       }
     });
 
-    const response = await api.get(`/approvals/queue?${params.toString()}`);
-    return response.data;
+    return await api.get(`/approvals/queue?${params.toString()}`);
   },
 
   // Get approval history for an event
   async getHistory(eventId: string): Promise<EventApproval[]> {
-    const response = await api.get(`/approvals/events/${eventId}/history`);
-    return response.data;
+    return await api.get(`/approvals/events/${eventId}/history`);
   },
 
   // Approve event
   async approve(approvalId: string, comments?: string): Promise<EventApproval> {
-    const response = await api.post(`/approvals/${approvalId}/approve`, { comments });
-    return response.data;
+    return await api.post(`/approvals/${approvalId}/approve`, { comments });
   },
 
   // Reject event
   async reject(approvalId: string, rejectionReason: string, comments?: string): Promise<EventApproval> {
-    const response = await api.post(`/approvals/${approvalId}/reject`, {
+    return await api.post(`/approvals/${approvalId}/reject`, {
       rejectionReason,
       comments,
     });
-    return response.data;
   },
 
   // Request revision
   async requestRevision(approvalId: string, comments: string): Promise<EventApproval> {
-    const response = await api.post(`/approvals/${approvalId}/request-revision`, { comments });
-    return response.data;
+    return await api.post(`/approvals/${approvalId}/request-revision`, { comments });
   },
 
   // Cancel approval
@@ -235,14 +228,12 @@ export const approvalsApi = {
     if (dateFrom) params.append('dateFrom', dateFrom);
     if (dateTo) params.append('dateTo', dateTo);
 
-    const response = await api.get(`/approvals/stats?${params.toString()}`);
-    return response.data;
+    return await api.get(`/approvals/stats?${params.toString()}`);
   },
 
   // Process expired approvals (admin only)
   async processExpired(): Promise<{ processed: number }> {
-    const response = await api.post('/approvals/process-expired');
-    return response.data;
+    return await api.post('/approvals/process-expired');
   },
 };
 

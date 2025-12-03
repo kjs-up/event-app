@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Dashboard,
@@ -11,6 +11,7 @@ import {
 
 import { useAuth } from '../../contexts/AuthContext';
 import { UserRole } from '../../types';
+import { eventsService } from '../../services/events.service';
 
 interface SidebarProps {
   open: boolean;
@@ -24,7 +25,7 @@ interface NavigationItem {
   path: string;
   icon: React.ReactElement;
   roles?: UserRole[];
-  badge?: string;
+  id?: string; // Added id to identify items
 }
 
 const navigationItems: NavigationItem[] = [
@@ -45,11 +46,11 @@ const navigationItems: NavigationItem[] = [
     roles: [UserRole.MAKER, UserRole.ADMIN],
   },
   {
+    id: 'approvals',
     label: 'Approval Queue',
     path: '/approvals',
     icon: <Approval />,
     roles: [UserRole.APPROVER, UserRole.ADMIN],
-    badge: '3', // This would come from actual data
   },
   {
     label: 'User Management',
@@ -68,6 +69,27 @@ export function Sidebar({ open, onClose, variant, width }: SidebarProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, hasAnyRole } = useAuth();
+  const [pendingApprovals, setPendingApprovals] = useState<number>(0);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      if (hasAnyRole([UserRole.ADMIN, UserRole.APPROVER])) {
+        try {
+          const stats = await eventsService.approvals.getStats();
+          setPendingApprovals(stats.totalPending);
+        } catch (error) {
+          console.error('Failed to fetch approval stats:', error);
+        }
+      }
+    };
+
+    fetchStats();
+
+    // Set up an interval to refresh stats periodically (every minute)
+    const intervalId = setInterval(fetchStats, 60000);
+
+    return () => clearInterval(intervalId);
+  }, [hasAnyRole]);
 
   const handleNavigation = (path: string) => {
     navigate(path);
@@ -120,6 +142,12 @@ export function Sidebar({ open, onClose, variant, width }: SidebarProps) {
 
               const isActive = location.pathname === item.path;
 
+              // Determine badge content
+              let badgeContent = null;
+              if (item.id === 'approvals' && pendingApprovals > 0) {
+                badgeContent = pendingApprovals.toString();
+              }
+
               return (
                 <button
                   key={item.path}
@@ -136,12 +164,12 @@ export function Sidebar({ open, onClose, variant, width }: SidebarProps) {
                     {item.icon}
                   </span>
                   <span className="flex-1 text-left">{item.label}</span>
-                  {item.badge && (
+                  {badgeContent && (
                     <span className={`
                       ml-auto inline-block py-0.5 px-2 text-xs font-medium rounded-full
                       ${isActive ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-600'}
                     `}>
-                      {item.badge}
+                      {badgeContent}
                     </span>
                   )}
                 </button>

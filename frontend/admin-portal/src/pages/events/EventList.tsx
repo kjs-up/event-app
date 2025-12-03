@@ -12,6 +12,7 @@ import { EventCard } from '../../components/events/EventCard';
 import { eventsService, EventProject, EventProjectListOptions } from '../../services/events.service';
 import { useRole } from '../../hooks/useRole';
 import { useAuth } from '../../contexts/AuthContext';
+import { UserRole } from '../../types';
 
 type ViewMode = 'grid' | 'list';
 type SortField = 'createdAt' | 'updatedAt' | 'name' | 'maxCapacity';
@@ -35,8 +36,11 @@ const EVENT_STATUSES = [
 
 export const EventList: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const { permissions } = useRole();
+
+  // Safe permission check
+  const canCreateEvents = permissions?.canCreateEvents ?? false;
 
   // State
   const [events, setEvents] = useState<EventProject[]>([]);
@@ -48,6 +52,13 @@ export const EventList: React.FC = () => {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [typeFilter, setTypeFilter] = useState<string>('');
+
+  // Set default filter for non-admins - REMOVED to allow seeing all events
+  // useEffect(() => {
+  //   if (user && user.role !== UserRole.ADMIN && !statusFilter) {
+  //     setStatusFilter('approved');
+  //   }
+  // }, [user]);
   const [sortBy, setSortBy] = useState<SortField>('createdAt');
   const [sortOrder, setSortOrder] = useState<SortOrder>('DESC');
 
@@ -69,7 +80,7 @@ export const EventList: React.FC = () => {
       sortOrder,
     };
 
-    if (search.trim()) options.search = search.trim();
+    if (search && search.trim()) options.search = search.trim();
     if (statusFilter) options.status = statusFilter;
     if (typeFilter) options.eventType = typeFilter;
 
@@ -83,7 +94,7 @@ export const EventList: React.FC = () => {
       setError(null);
       const response = await eventsService.getAll(options);
 
-      setEvents(response.data);
+      setEvents(response.data || []);
       setTotal(response.total);
       setTotalPages(Math.ceil(response.total / options.limit!));
     } catch (err) {
@@ -155,6 +166,14 @@ export const EventList: React.FC = () => {
     setPage(1);
   };
 
+  if (authLoading) {
+    return (
+      <div className="flex justify-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
   if (!user) {
     return (
       <div className="p-4">
@@ -195,7 +214,7 @@ export const EventList: React.FC = () => {
             {viewMode === 'grid' ? <ListViewIcon /> : <GridViewIcon />}
           </button>
 
-          {permissions.canCreateEvents && (
+          {canCreateEvents && (
             <button
               onClick={handleCreateEvent}
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -319,7 +338,7 @@ export const EventList: React.FC = () => {
                   ? 'Try adjusting your search criteria'
                   : 'Get started by creating your first event'}
               </p>
-              {permissions.canCreateEvents && !search && !statusFilter && !typeFilter && (
+              {canCreateEvents && !search && !statusFilter && !typeFilter && (
                 <div className="mt-6">
                   <button
                     onClick={handleCreateEvent}
