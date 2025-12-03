@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Creation Wizard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        ::webkit-scrollbar { display: none;}
+        * { font-family: 'Inter', sans-serif; }
+        .rich-editor {
+            min-height: 120px;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4A90E2',
+                        accent: '#FFCE00',
+                        danger: '#D0021B'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+
+<header id="header" class="bg-white shadow-sm border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-8">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-calendar-check text-primary text-2xl"></i>
+                    <span class="text-xl font-bold text-gray-900">EventPro</span>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">Dashboard</a>
+                    <a href="#" class="text-primary font-medium">Create Event</a>
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">My Events</a>
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">Reports</a>
+                </nav>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600 hover:text-primary" title="Save and exit">
+                    <i class="fa-solid fa-save text-lg"></i>
+                </button>
+                <button class="text-gray-600 hover:text-primary" title="Help">
+                    <i class="fa-solid fa-question-circle text-lg"></i>
+                </button>
+                <div class="flex items-center bg-gray-100 rounded-lg p-1">
+                    <button class="px-3 py-1 bg-white rounded-md shadow-sm text-sm font-medium text-primary">EN</button>
+                    <button class="px-3 py-1 text-sm font-medium text-gray-600">TH</button>
+                </div>
+                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full">
+            </div>
+        </div>
+    </div>
+</header>
+
+<div id="wizard-progress" class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="flex items-center justify-between mb-4">
+            <h1 class="text-2xl font-bold text-gray-900">Step 1 of 7: Basic Event Information</h1>
+            <div class="flex items-center space-x-3">
+                <span class="text-sm text-gray-600">Auto-save enabled</span>
+                <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+            </div>
+        </div>
+        
+        <div class="relative">
+            <div class="flex items-center">
+                <div class="flex items-center space-x-2 cursor-pointer">
+                    <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">1</div>
+                    <span class="text-sm font-medium text-primary">Basic Info</span>
+                </div>
+                <div class="h-px bg-primary flex-1 max-w-16 ml-4"></div>
+                
+                <div class="flex items-center space-x-2 cursor-pointer">
+                    <div class="w-8 h-8 bg-gray-300 text-gray-500 rounded-full flex items-center justify-center text-sm font-medium">2</div>
+                    <span class="text-sm text-gray-500">Venue</span>
+                </div>
+                <div class="h-px bg-gray-300 flex-1 max-w-16 ml-4"></div>
+                
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gray-300 text-gray-500 rounded-full flex items-center justify-center text-sm font-medium">3</div>
+                    <span class="text-sm text-gray-500">Ticketing</span>
+                </div>
+                <div class="h-px bg-gray-300 flex-1 max-w-16 ml-4"></div>
+                
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gray-300 text-gray-500 rounded-full flex items-center justify-center text-sm font-medium">4</div>
+                    <span class="text-sm text-gray-500">Features</span>
+                </div>
+                <div class="h-px bg-gray-300 flex-1 max-w-16 ml-4"></div>
+                
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gray-300 text-gray-500 rounded-full flex items-center justify-center text-sm font-medium">5</div>
+                    <span class="text-sm text-gray-500">Payment</span>
+                </div>
+                <div class="h-px bg-gray-300 flex-1 max-w-16 ml-4"></div>
+                
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gray-300 text-gray-500 rounded-full flex items-center justify-center text-sm font-medium">6</div>
+                    <span class="text-sm text-gray-500">Communication</span>
+                </div>
+                <div class="h-px bg-gray-300 flex-1 max-w-16 ml-4"></div>
+                
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gray-300 text-gray-500 rounded-full flex items-center justify-center text-sm font-medium">7</div>
+                    <span class="text-sm text-gray-500">Preview</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<main id="main-content" class="max-w-7xl mx-auto px-6 py-8">
+    <div class="grid grid-cols-12 gap-8">
+        <div id="form-section" class="col-span-8">
+            <form class="space-y-8">
+                <div id="event-details-panel" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                        <i class="fa-solid fa-info-circle text-primary mr-3"></i>
+                        Event Details
+                    </h2>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Event Name *</label>
+                            <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Enter your event name" maxlength="100">
+                            <div class="flex justify-between mt-1">
+                                <span class="text-xs text-gray-500">0/100 characters</span>
+                                <i class="fa-solid fa-check-circle text-green-500 hidden" id="name-valid"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Event Category *</label>
+                                <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                                    <option value="">Select category</option>
+                                    <option value="concerts">Concerts & Music</option>
+                                    <option value="tech">Tech & Innovation</option>
+                                    <option value="sports">Sports & Recreation</option>
+                                    <option value="business">Business & Corporate</option>
+                                    <option value="education">Education & Training</option>
+                                    <option value="arts">Arts & Culture</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Event Type</label>
+                                <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                                    <option value="">Select type</option>
+                                    <option value="single">Single Day</option>
+                                    <option value="multi">Multi-Day</option>
+                                    <option value="recurring">Recurring</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Event Description *</label>
+                            <div class="border border-gray-300 rounded-lg">
+                                <div class="flex items-center space-x-2 p-3 border-b border-gray-200 bg-gray-50">
+                                    <button type="button" class="p-1 hover:bg-gray-200 rounded">
+                                        <i class="fa-solid fa-bold text-sm text-gray-600"></i>
+                                    </button>
+                                    <button type="button" class="p-1 hover:bg-gray-200 rounded">
+                                        <i class="fa-solid fa-italic text-sm text-gray-600"></i>
+                                    </button>
+                                    <button type="button" class="p-1 hover:bg-gray-200 rounded">
+                                        <i class="fa-solid fa-list-ul text-sm text-gray-600"></i>
+                                    </button>
+                                    <button type="button" class="p-1 hover:bg-gray-200 rounded">
+                                        <i class="fa-solid fa-link text-sm text-gray-600"></i>
+                                    </button>
+                                </div>
+                                <textarea class="w-full p-4 rich-editor border-0 focus:ring-0 resize-none" placeholder="Describe your event in detail..."></textarea>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Event Image</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6">
+                                <div class="text-center">
+                                    <i class="fa-solid fa-image text-3xl text-gray-400 mb-3"></i>
+                                    <p class="text-sm text-gray-600 mb-2">Upload event image or drag & drop</p>
+                                    <button type="button" class="px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-blue-600">
+                                        Choose Image
+                                    </button>
+                                    <p class="text-xs text-gray-500 mt-2">Recommended: 1920x1080px, max 5MB</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="datetime-panel" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                        <i class="fa-solid fa-calendar-alt text-primary mr-3"></i>
+                        Date & Time
+                    </h2>
+                    
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Start Date *</label>
+                            <input type="date" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Start Time *</label>
+                            <input type="time" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">End Date *</label>
+                            <input type="date" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">End Time *</label>
+                            <input type="time" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                        </div>
+                        
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Timezone</label>
+                            <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                                <option value="Asia/Bangkok">Asia/Bangkok (GMT+7)</option>
+                                <option value="UTC">UTC (GMT+0)</option>
+                                <option value="America/New_York">America/New_York (GMT-5)</option>
+                                <option value="Europe/London">Europe/London (GMT+0)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div id="sidebar" class="col-span-4">
+            <div class="sticky top-8 space-y-6">
+                <div id="template-panel" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fa-solid fa-magic text-primary mr-2"></i>
+                        Quick Start Templates
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <button class="w-full text-left p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-blue-50 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Concert Template</p>
+                                    <p class="text-xs text-gray-500">Music events with VIP areas</p>
+                                </div>
+                                <i class="fa-solid fa-music text-primary"></i>
+                            </div>
+                        </button>
+                        
+                        <button class="w-full text-left p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-blue-50 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Conference Template</p>
+                                    <p class="text-xs text-gray-500">Business & tech events</p>
+                                </div>
+                                <i class="fa-solid fa-users text-primary"></i>
+                            </div>
+                        </button>
+                        
+                        <button class="w-full text-left p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-blue-50 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Sports Template</p>
+                                    <p class="text-xs text-gray-500">Stadium & arena events</p>
+                                </div>
+                                <i class="fa-solid fa-trophy text-primary"></i>
+                            </div>
+                        </button>
+                        
+                        <hr class="border-gray-200">
+                        
+                        <button class="w-full text-left p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-blue-50 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Clone Previous Event</p>
+                                    <p class="text-xs text-gray-500">Use existing event as base</p>
+                                </div>
+                                <i class="fa-solid fa-copy text-primary"></i>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="validation-panel" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fa-solid fa-check-circle text-primary mr-2"></i>
+                        Validation Status
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-red-50 border border-red-200 rounded-lg">
+                            <div class="flex items-center">
+                                <i class="fa-solid fa-exclamation-circle text-danger mr-2"></i>
+                                <span class="text-sm text-gray-900">Event Name</span>
+                            </div>
+                            <span class="text-xs text-danger">Required</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-red-50 border border-red-200 rounded-lg">
+                            <div class="flex items-center">
+                                <i class="fa-solid fa-exclamation-circle text-danger mr-2"></i>
+                                <span class="text-sm text-gray-900">Category</span>
+                            </div>
+                            <span class="text-xs text-danger">Required</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <div class="flex items-center">
+                                <i class="fa-solid fa-info-circle text-accent mr-2"></i>
+                                <span class="text-sm text-gray-900">Description</span>
+                            </div>
+                            <span class="text-xs text-yellow-600">Recommended</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="help-tips" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Pro Tips</h3>
+                    
+                    <div class="space-y-3">
+                        <div class="p-3 bg-blue-50 rounded-lg">
+                            <p class="text-sm text-gray-900 font-medium mb-1">Event Name Best Practices</p>
+                            <p class="text-xs text-gray-600">Keep it clear and descriptive. Include key details like date or location if space permits.</p>
+                        </div>
+                        
+                        <div class="p-3 bg-green-50 rounded-lg">
+                            <p class="text-sm text-gray-900 font-medium mb-1">Image Guidelines</p>
+                            <p class="text-xs text-gray-600">High-quality images increase ticket sales by up to 30%. Use bright, engaging visuals.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer id="footer" class="bg-white border-t border-gray-200 mt-12">
+    <div class="max-w-7xl mx-auto px-6 py-6">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-6">
+                <button class="text-sm text-gray-600 hover:text-primary flex items-center">
+                    <i class="fa-solid fa-question-circle mr-2"></i>
+                    Help & Documentation
+                </button>
+                <span class="text-sm text-gray-500">Last saved: Just now</span>
+            </div>
+            <div class="flex space-x-4">
+                <button class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors">
+                    Save as Draft
+                </button>
+                <button class="px-6 py-3 bg-gray-300 text-gray-500 rounded-lg font-medium cursor-not-allowed" disabled>
+                    Continue to Step 2
+                </button>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+window.addEventListener('load', function() {
+    const eventNameInput = document.querySelector('input[placeholder="Enter your event name"]');
+    const charCounter = document.querySelector('.text-xs.text-gray-500');
+    const continueBtn = document.querySelector('button:disabled');
+    
+    eventNameInput.addEventListener('input', function() {
+        const length = this.value.length;
+        charCounter.textContent = `${length}/100 characters`;
+        
+        if (length > 0) {
+            charCounter.classList.add('text-green-600');
+            charCounter.classList.remove('text-gray-500');
+            continueBtn.disabled = false;
+            continueBtn.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+            continueBtn.classList.add('bg-primary', 'text-white', 'hover:bg-blue-600');
+        } else {
+            charCounter.classList.remove('text-green-600');
+            charCounter.classList.add('text-gray-500');
+            continueBtn.disabled = true;
+            continueBtn.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+            continueBtn.classList.remove('bg-primary', 'text-white', 'hover:bg-blue-600');
+        }
+    });
+});
+</script>
+
+</body>
+</html>

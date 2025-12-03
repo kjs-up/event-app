@@ -1,32 +1,16 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-  Box,
-  Divider,
-  Chip,
-} from '@mui/material';
-import {
   Dashboard,
   Event,
   People,
   Approval,
   Settings,
   EventNote,
-  PersonAdd,
-  Analytics,
-  Assignment,
-  CheckCircle,
 } from '@mui/icons-material';
 
 import { useAuth } from '../../contexts/AuthContext';
-import { UserRole } from '@/shared/types';
+import { UserRole } from '../../types';
 
 interface SidebarProps {
   open: boolean;
@@ -92,139 +76,86 @@ export function Sidebar({ open, onClose, variant, width }: SidebarProps) {
     }
   };
 
-  const drawerContent = (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      {/* Logo/Brand */}
-      <Box
-        sx={{
-          p: 2,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderBottom: '1px solid #e0e0e0',
-        }}
-      >
-        <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
-          Admin Portal
-        </Typography>
-      </Box>
+  const sidebarClasses = `
+    fixed top-0 left-0 h-full bg-white border-r border-gray-200 z-30 transition-transform duration-300 ease-in-out
+    ${open ? 'translate-x-0' : '-translate-x-full'}
+    ${variant === 'permanent' ? 'md:translate-x-0' : ''}
+  `;
 
-      {/* User info */}
-      <Box sx={{ p: 2, backgroundColor: '#f8f9fa' }}>
-        <Typography variant="body2" sx={{ fontWeight: 500 }}>
-          Welcome, {user?.firstName}
-        </Typography>
-        <Chip
-          label={user?.role.toUpperCase()}
-          size="small"
-          color="primary"
-          variant="outlined"
-          sx={{ mt: 0.5 }}
-        />
-      </Box>
-
-      <Divider />
-
-      {/* Navigation */}
-      <List sx={{ flexGrow: 1, pt: 1 }}>
-        {navigationItems.map((item) => {
-          // Check if user has required role for this item
-          if (item.roles && !hasAnyRole(item.roles)) {
-            return null;
-          }
-
-          const isActive = location.pathname === item.path;
-
-          return (
-            <ListItem key={item.path} disablePadding>
-              <ListItemButton
-                onClick={() => handleNavigation(item.path)}
-                selected={isActive}
-                sx={{
-                  mx: 1,
-                  mb: 0.5,
-                  borderRadius: 2,
-                  '&.Mui-selected': {
-                    backgroundColor: 'primary.main',
-                    color: 'white',
-                    '&:hover': {
-                      backgroundColor: 'primary.dark',
-                    },
-                    '& .MuiListItemIcon-root': {
-                      color: 'white',
-                    },
-                  },
-                  '&:hover': {
-                    backgroundColor: isActive ? 'primary.dark' : 'action.hover',
-                  },
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 40,
-                    color: isActive ? 'inherit' : 'text.secondary',
-                  }}
-                >
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.label}
-                  primaryTypographyProps={{
-                    fontSize: '0.875rem',
-                    fontWeight: isActive ? 500 : 400,
-                  }}
-                />
-                {item.badge && (
-                  <Chip
-                    label={item.badge}
-                    size="small"
-                    color="error"
-                    sx={{
-                      height: 20,
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                    }}
-                  />
-                )}
-              </ListItemButton>
-            </ListItem>
-          );
-        })}
-      </List>
-
-      {/* Footer */}
-      <Box sx={{ p: 2, borderTop: '1px solid #e0e0e0' }}>
-        <Typography variant="caption" color="text.secondary">
-          Event Management Platform
-        </Typography>
-        <br />
-        <Typography variant="caption" color="text.secondary">
-          v1.0.0
-        </Typography>
-      </Box>
-    </Box>
-  );
+  const overlayClasses = `
+    fixed inset-0 bg-gray-600 bg-opacity-50 z-20 transition-opacity duration-300
+    ${open && variant === 'temporary' ? 'opacity-100' : 'opacity-0 pointer-events-none'}
+    md:hidden
+  `;
 
   return (
-    <Drawer
-      variant={variant}
-      open={open}
-      onClose={onClose}
-      ModalProps={{
-        keepMounted: true, // Better open performance on mobile
-      }}
-      sx={{
-        width: width,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
-          width: width,
-          boxSizing: 'border-box',
-          backgroundColor: '#ffffff',
-          borderRight: '1px solid #e0e0e0',
-        },
-      }}
-    >
-      {drawerContent}
-    </Drawer>
+    <>
+      {/* Mobile Overlay */}
+      <div className={overlayClasses} onClick={onClose}></div>
+
+      {/* Sidebar */}
+      <aside className={sidebarClasses} style={{ width: `${width}px` }}>
+        <div className="flex flex-col h-full">
+          {/* Logo/Brand */}
+          <div className="h-16 flex items-center justify-center border-b border-gray-200">
+            <h2 className="text-xl font-bold text-gray-800">Admin Portal</h2>
+          </div>
+
+          {/* User info */}
+          <div className="p-4 bg-gray-50 border-b border-gray-200">
+            <p className="text-sm font-medium text-gray-900">
+              Welcome, {user?.firstName}
+            </p>
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 mt-1">
+              {user?.role.toUpperCase()}
+            </span>
+          </div>
+
+          {/* Navigation */}
+          <nav className="flex-1 overflow-y-auto py-4 px-2 space-y-1">
+            {navigationItems.map((item) => {
+              if (item.roles && !hasAnyRole(item.roles)) {
+                return null;
+              }
+
+              const isActive = location.pathname === item.path;
+
+              return (
+                <button
+                  key={item.path}
+                  onClick={() => handleNavigation(item.path)}
+                  className={`
+                    w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors duration-150
+                    ${isActive
+                      ? 'bg-blue-600 text-white'
+                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                    }
+                  `}
+                >
+                  <span className={`mr-3 flex-shrink-0 ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-gray-500'}`}>
+                    {item.icon}
+                  </span>
+                  <span className="flex-1 text-left">{item.label}</span>
+                  {item.badge && (
+                    <span className={`
+                      ml-auto inline-block py-0.5 px-2 text-xs font-medium rounded-full
+                      ${isActive ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-600'}
+                    `}>
+                      {item.badge}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </nav>
+
+          {/* Footer */}
+          <div className="p-4 border-t border-gray-200">
+            <p className="text-xs text-gray-500">Event Management Platform</p>
+            <p className="text-xs text-gray-400">v1.0.0</p>
+          </div>
+        </div>
+      </aside>
+    </>
   );
 }

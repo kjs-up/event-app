@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        ::webkit-scrollbar { display: none;}
+        * { font-family: 'Inter', sans-serif; }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4A90E2',
+                        accent: '#FFCE00',
+                        danger: '#D0021B'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+
+<header id="header" class="bg-white shadow-sm border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-8">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-calendar-check text-primary text-2xl"></i>
+                    <span class="text-xl font-bold text-gray-900">EventPro</span>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">Dashboard</a>
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">Browse Events</a>
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">My Tickets</a>
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">Support</a>
+                </nav>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center bg-gray-100 rounded-lg p-1">
+                    <button class="px-3 py-1 bg-white rounded-md shadow-sm text-sm font-medium text-primary">EN</button>
+                    <button class="px-3 py-1 text-sm font-medium text-gray-600">TH</button>
+                </div>
+                <div class="flex items-center space-x-2 text-sm text-gray-600">
+                    <i class="fa-solid fa-headset"></i>
+                    <span>+66 2 123 4567</span>
+                </div>
+                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" class="w-8 h-8 rounded-full">
+            </div>
+        </div>
+    </div>
+</header>
+
+<div id="checkout-progress" class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <span class="text-sm font-medium text-gray-900">Select Seats</span>
+                </div>
+                <div class="h-px bg-primary flex-1 max-w-20"></div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <span class="text-sm font-medium text-gray-900">Review Order</span>
+                </div>
+                <div class="h-px bg-primary flex-1 max-w-20"></div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">3</div>
+                    <span class="text-sm font-medium text-primary">Payment</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2">
+                <i class="fa-solid fa-clock text-amber-600"></i>
+                <div class="text-sm">
+                    <span class="text-gray-600">Session expires in:</span>
+                    <span class="font-semibold text-amber-600 ml-2">14:52</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="security-banner" class="bg-green-50 border-b border-green-100">
+    <div class="max-w-7xl mx-auto px-6 py-3">
+        <div class="flex items-center justify-center space-x-6 text-sm">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-shield-halved text-green-600"></i>
+                <span class="text-gray-700">SSL Encrypted</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-lock text-green-600"></i>
+                <span class="text-gray-700">PCI DSS Compliant</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-credit-card text-green-600"></i>
+                <span class="text-gray-700">3D Secure Verified</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<main id="main-content" class="max-w-7xl mx-auto px-6 py-8">
+    <div class="grid grid-cols-12 gap-8">
+        <div id="checkout-form-section" class="col-span-7">
+            <div class="space-y-6">
+                <div id="customer-info-panel" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                        <i class="fa-solid fa-user text-primary mr-3"></i>
+                        Customer Information
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">First Name *</label>
+                                <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="John">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Last Name *</label>
+                                <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Doe">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
+                            <input type="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="john.doe@example.com">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
+                            <div class="flex space-x-3">
+                                <select class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                                    <option>+66</option>
+                                    <option>+1</option>
+                                    <option>+44</option>
+                                </select>
+                                <input type="tel" class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="81 234 5678">
+                            </div>
+                        </div>
+                        
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <div class="flex items-start space-x-3">
+                                <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded mt-1">
+                                <div class="text-sm">
+                                    <p class="font-medium text-gray-900">Create an account for faster checkout next time</p>
+                                    <p class="text-gray-600 mt-1">Save your details and view order history</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded mt-1">
+                            <p class="text-sm text-gray-600">Send me promotional emails about upcoming events and special offers</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="payment-method-panel" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                        <i class="fa-solid fa-credit-card text-primary mr-3"></i>
+                        Payment Method
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="flex items-center justify-between p-4 border-2 border-primary bg-blue-50 rounded-lg cursor-pointer">
+                                <div class="flex items-center space-x-3">
+                                    <input type="radio" name="payment" checked class="w-4 h-4 text-primary">
+                                    <i class="fa-solid fa-credit-card text-xl text-gray-700"></i>
+                                    <span class="font-medium text-gray-900">Card</span>
+                                </div>
+                            </label>
+                            
+                            <label class="flex items-center justify-between p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary">
+                                <div class="flex items-center space-x-3">
+                                    <input type="radio" name="payment" class="w-4 h-4 text-primary">
+                                    <i class="fa-brands fa-paypal text-xl text-blue-600"></i>
+                                    <span class="font-medium text-gray-900">PayPal</span>
+                                </div>
+                            </label>
+                            
+                            <label class="flex items-center justify-between p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary">
+                                <div class="flex items-center space-x-3">
+                                    <input type="radio" name="payment" class="w-4 h-4 text-primary">
+                                    <i class="fa-brands fa-apple text-xl text-gray-900"></i>
+                                    <span class="font-medium text-gray-900">Apple Pay</span>
+                                </div>
+                            </label>
+                            
+                            <label class="flex items-center justify-between p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary">
+                                <div class="flex items-center space-x-3">
+                                    <input type="radio" name="payment" class="w-4 h-4 text-primary">
+                                    <i class="fa-brands fa-google text-xl text-gray-700"></i>
+                                    <span class="font-medium text-gray-900">Google Pay</span>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div id="card-details" class="space-y-4 mt-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Card Number *</label>
+                                <div class="relative">
+                                    <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="1234 5678 9012 3456" maxlength="19">
+                                    <div class="absolute right-3 top-3 flex space-x-2">
+                                        <i class="fa-brands fa-cc-visa text-2xl text-blue-600"></i>
+                                        <i class="fa-brands fa-cc-mastercard text-2xl text-red-600"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Expiry Date *</label>
+                                    <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="MM / YY">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                        CVV *
+                                        <i class="fa-solid fa-circle-info text-gray-400 ml-1 text-xs"></i>
+                                    </label>
+                                    <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="123" maxlength="3">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Cardholder Name *</label>
+                                <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="John Doe">
+                            </div>
+                            
+                            <div class="flex items-center space-x-2">
+                                <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded">
+                                <span class="text-sm text-gray-600">Save card for future purchases</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="billing-info-panel" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                        <i class="fa-solid fa-location-dot text-primary mr-3"></i>
+                        Billing Information
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-2 mb-4">
+                            <input type="checkbox" checked class="w-4 h-4 text-primary border-gray-300 rounded">
+                            <span class="text-sm text-gray-600">Same as customer information</span>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Country *</label>
+                            <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                                <option>Thailand</option>
+                                <option>United States</option>
+                                <option>United Kingdom</option>
+                                <option>Singapore</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Address Line 1 *</label>
+                            <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="123 Main Street">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Address Line 2</label>
+                            <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Apartment, suite, etc.">
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">City *</label>
+                                <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Bangkok">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">State/Province *</label>
+                                <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Bangkok">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Postal Code *</label>
+                                <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="10110">
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                            <label class="flex items-start space-x-3">
+                                <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded mt-1">
+                                <div class="text-sm">
+                                    <p class="font-medium text-gray-900">Business Purchase</p>
+                                    <p class="text-gray-600 mt-1">Include company details for tax invoice</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="order-summary-sidebar" class="col-span-5">
+            <div class="sticky top-8 space-y-6">
+                <div id="order-details-panel" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center justify-between">
+                        <span>Order Summary</span>
+                        <i class="fa-solid fa-shopping-cart text-primary"></i>
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="flex items-start space-x-3 mb-3">
+                                <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center overflow-hidden">
+                                    <i class="fa-solid fa-music text-white text-2xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-semibold text-gray-900">Summer Music Festival 2024</h3>
+                                    <p class="text-sm text-gray-600 mt-1">June 15, 2024 at 7:00 PM</p>
+                                    <p class="text-sm text-gray-600">Central Stadium, Bangkok</p>
+                                </div>
+                            </div>
+                            
+                            <div class="border-t border-gray-200 pt-3 space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">VIP Section A - Row 5</span>
+                                    <button class="text-primary hover:underline">Edit</button>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-sm text-gray-600">Seat 12, 13</span>
+                                        <span class="text-xs bg-primary text-white px-2 py-1 rounded">x2</span>
+                                    </div>
+                                    <span class="font-semibold text-gray-900">฿4,500</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Promo Code</label>
+                                <div class="flex space-x-2">
+                                    <input type="text" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter code">
+                                    <button class="px-4 py-2 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors text-sm">Apply</button>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-green-50 border border-green-200 rounded-lg p-3 flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fa-solid fa-tag text-green-600"></i>
+                                    <span class="text-sm font-medium text-green-900">EARLY15 Applied</span>
+                                </div>
+                                <button class="text-red-600 hover:text-red-700">
+                                    <i class="fa-solid fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="border-t border-gray-200 pt-4 space-y-3">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Subtotal (2 tickets)</span>
+                                <span class="font-medium">฿5,000</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Early bird discount</span>
+                                <span class="font-medium text-green-600">-฿500</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Service fee</span>
+                                <span class="font-medium">฿200</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">VAT (7%)</span>
+                                <span class="font-medium">฿329</span>
+                            </div>
+                        </div>
+                        
+                        <div class="border-t-2 border-gray-300 pt-4">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-lg font-semibold text-gray-900">Total</span>
+                                <div class="text-right">
+                                    <div class="text-2xl font-bold text-primary">฿5,029</div>
+                                    <div class="text-xs text-gray-500">≈ $142.50 USD</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-2 text-xs text-gray-600">
+                                <i class="fa-solid fa-globe"></i>
+                                <select class="text-xs border-none bg-transparent focus:ring-0 p-0">
+                                    <option>THB (฿)</option>
+                                    <option>USD ($)</option>
+                                    <option>EUR (€)</option>
+                                    <option>GBP (£)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="trust-badges" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Your Purchase is Protected</h3>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-shield-halved text-green-600 text-xl mt-1"></i>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Secure Payment</p>
+                                <p class="text-xs text-gray-600">256-bit SSL encryption</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-rotate-left text-blue-600 text-xl mt-1"></i>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Refund Policy</p>
+                                <p class="text-xs text-gray-600">Full refund up to 48 hours before event</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-headset text-purple-600 text-xl mt-1"></i>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">24/7 Support</p>
+                                <p class="text-xs text-gray-600">We're here to help anytime</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="terms-acceptance" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <div class="space-y-3">
+                        <label class="flex items-start space-x-3">
+                            <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded mt-1">
+                            <span class="text-sm text-gray-600">I agree to the <a href="#" class="text-primary hover:underline">Terms and Conditions</a> and <a href="#" class="text-primary hover:underline">Privacy Policy</a></span>
+                        </label>
+                        <label class="flex items-start space-x-3">
+                            <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded mt-1">
+                            <span class="text-sm text-gray-600">I acknowledge the <a href="#" class="text-primary hover:underline">Refund Policy</a> and event terms</span>
+                        </label>
+                    </div>
+                    
+                    <button class="w-full mt-6 bg-primary text-white py-4 rounded-lg font-semibold hover:bg-blue-600 transition-colors flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-lock"></i>
+                        <span>Complete Secure Payment</span>
+                    </button>
+                    
+                    <p class="text-xs text-center text-gray-500 mt-3">Your payment information is encrypted and secure</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer id="footer" class="bg-white border-t border-gray-200 mt-12">
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <div class="grid grid-cols-4 gap-8 mb-8">
+            <div>
+                <div class="flex items-center space-x-2 mb-4">
+                    <i class="fa-solid fa-calendar-check text-primary text-xl"></i>
+                    <span class="font-bold text-gray-900">EventPro</span>
+                </div>
+                <p class="text-sm text-gray-600">Your trusted partner for seamless event experiences</p>
+            </div>
+            <div>
+                <h4 class="font-semibold text-gray-900 mb-3">Support</h4>
+                <ul class="space-y-2 text-sm text-gray-600">
+                    <li><a href="#" class="hover:text-primary">Help Center</a></li>
+                    <li><a href="#" class="hover:text-primary">Contact Us</a></li>
+                    <li><a href="#" class="hover:text-primary">Refund Policy</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold text-gray-900 mb-3">Legal</h4>
+                <ul class

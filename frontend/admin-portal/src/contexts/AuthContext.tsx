@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
-import { User, UserRole, AuthResponse } from '@/shared/types';
+import { User, UserRole, AuthResponse } from '../types/index';
 import { authService } from '../services/auth.service';
 import toast from 'react-hot-toast';
 

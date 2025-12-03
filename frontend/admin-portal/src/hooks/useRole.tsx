@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-
-export type UserRole = 'maker' | 'approver' | 'admin';
+import { UserRole } from '../types';
 
 export interface RolePermissions {
   canCreateEvents: boolean;
@@ -33,7 +32,7 @@ export interface UseRoleReturn {
 
 // Define role-based permissions
 const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
-  maker: {
+  [UserRole.MAKER]: {
     canCreateEvents: true,
     canEditOwnEvents: true,
     canEditAnyEvents: false,
@@ -49,7 +48,7 @@ const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
     canViewApprovalStats: false,
     canAccessAdminFeatures: false,
   },
-  approver: {
+  [UserRole.APPROVER]: {
     canCreateEvents: true,
     canEditOwnEvents: true,
     canEditAnyEvents: false, // Can only change status, not content
@@ -65,7 +64,7 @@ const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
     canViewApprovalStats: true,
     canAccessAdminFeatures: false,
   },
-  admin: {
+  [UserRole.ADMIN]: {
     canCreateEvents: true,
     canEditOwnEvents: true,
     canEditAnyEvents: true,
@@ -86,7 +85,7 @@ const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
 export const useRole = (): UseRoleReturn => {
   const { user } = useAuth();
 
-  const userRole = user?.role as UserRole | null;
+  const userRole = (user?.role as UserRole) || null;
   const permissions = userRole ? ROLE_PERMISSIONS[userRole] : {} as RolePermissions;
 
   const hasRole = useCallback(
@@ -130,17 +129,17 @@ export const useRole = (): UseRoleReturn => {
       if (!userRole) return false;
 
       // Admin can modify any event
-      if (userRole === 'admin') {
+      if (userRole === UserRole.ADMIN) {
         return true;
       }
 
       // Makers can modify their own events in draft or rejected state
-      if (userRole === 'maker' && isOwner(eventOwnerId)) {
+      if (userRole === UserRole.MAKER && isOwner(eventOwnerId)) {
         return !eventStatus || eventStatus === 'draft' || eventStatus === 'rejected';
       }
 
       // Approvers can change status of pending events
-      if (userRole === 'approver' && eventStatus === 'pending_approval') {
+      if (userRole === UserRole.APPROVER && eventStatus === 'pending_approval') {
         return true;
       }
 
@@ -154,12 +153,12 @@ export const useRole = (): UseRoleReturn => {
       if (!userRole) return false;
 
       // Admin and approvers can view any event
-      if (userRole === 'admin' || userRole === 'approver') {
+      if (userRole === UserRole.ADMIN || userRole === UserRole.APPROVER) {
         return true;
       }
 
       // Makers can view their own events
-      if (userRole === 'maker' && isOwner(eventOwnerId)) {
+      if (userRole === UserRole.MAKER && isOwner(eventOwnerId)) {
         return true;
       }
 
@@ -232,9 +231,9 @@ export const useRoleGuard = (requiredRoles: UserRole | UserRole[]): boolean => {
 
 // Utility functions for common role checks
 export const roleUtils = {
-  isMaker: (role: UserRole | null): boolean => role === 'maker',
-  isApprover: (role: UserRole | null): boolean => role === 'approver',
-  isAdmin: (role: UserRole | null): boolean => role === 'admin',
+  isMaker: (role: UserRole | null): boolean => role === UserRole.MAKER,
+  isApprover: (role: UserRole | null): boolean => role === UserRole.APPROVER,
+  isAdmin: (role: UserRole | null): boolean => role === UserRole.ADMIN,
 
   canCreateEvents: (role: UserRole | null): boolean =>
     role ? ROLE_PERMISSIONS[role].canCreateEvents : false,

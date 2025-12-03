@@ -1,30 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
-  Box,
-  Container,
-  Typography,
-  Button,
-  TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Grid,
-  Card,
-  CardContent,
-  Pagination,
-  Chip,
-  IconButton,
-  Tooltip,
-  Alert,
-  CircularProgress,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Fab,
-} from '@mui/material';
-import {
   Add as AddIcon,
   Search as SearchIcon,
   FilterList as FilterIcon,
@@ -61,7 +36,7 @@ const EVENT_STATUSES = [
 export const EventList: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { permissions, hasRole } = useRole();
+  const { permissions } = useRole();
 
   // State
   const [events, setEvents] = useState<EventProject[]>([]);
@@ -171,10 +146,6 @@ export const EventList: React.FC = () => {
     loadEvents();
   };
 
-  const handlePageChange = (_event: React.ChangeEvent<unknown>, newPage: number) => {
-    setPage(newPage);
-  };
-
   const clearFilters = () => {
     setSearch('');
     setStatusFilter('');
@@ -186,201 +157,184 @@ export const EventList: React.FC = () => {
 
   if (!user) {
     return (
-      <Container>
-        <Alert severity="error">Please log in to view events</Alert>
-      </Container>
+      <div className="p-4">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <strong className="font-bold">Error!</strong>
+          <span className="block sm:inline"> Please log in to view events</span>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Container maxWidth="xl" sx={{ py: 3 }}>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Box>
-          <Typography variant="h4" component="h1" gutterBottom>
-            Events
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Events</h1>
+          <p className="text-sm text-gray-500">
             {total > 0 ? `${total} event${total !== 1 ? 's' : ''} found` : 'No events found'}
-          </Typography>
-        </Box>
+          </p>
+        </div>
 
-        <Box display="flex" gap={1}>
-          <Tooltip title="Refresh">
-            <IconButton onClick={handleRefresh} disabled={loading}>
-              <RefreshIcon />
-            </IconButton>
-          </Tooltip>
+        <div className="flex gap-2">
+          <button
+            onClick={handleRefresh}
+            disabled={loading}
+            className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100"
+            title="Refresh"
+          >
+            <RefreshIcon />
+          </button>
 
-          <Tooltip title="Toggle view">
-            <IconButton
-              onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-            >
-              {viewMode === 'grid' ? <ListViewIcon /> : <GridViewIcon />}
-            </IconButton>
-          </Tooltip>
+          <button
+            onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
+            className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100"
+            title="Toggle view"
+          >
+            {viewMode === 'grid' ? <ListViewIcon /> : <GridViewIcon />}
+          </button>
 
           {permissions.canCreateEvents && (
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
+            <button
               onClick={handleCreateEvent}
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              Create Event
-            </Button>
+              <AddIcon className="mr-2" /> Create Event
+            </button>
           )}
-        </Box>
-      </Box>
+        </div>
+      </div>
 
       {/* Search and Filters */}
-      <Card variant="outlined" sx={{ mb: 3 }}>
-        <CardContent>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} md={4}>
-              <Box component="form" onSubmit={handleSearchSubmit} display="flex" gap={1}>
-                <TextField
-                  fullWidth
+      <div className="bg-white shadow rounded-lg mb-6 p-4">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+          <div className="md:col-span-4">
+            <form onSubmit={handleSearchSubmit} className="flex gap-2">
+              <div className="relative flex-grow">
+                <input
+                  type="text"
                   placeholder="Search events..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  InputProps={{
-                    endAdornment: (
-                      <IconButton type="submit" size="small">
-                        <SearchIcon />
-                      </IconButton>
-                    ),
-                  }}
+                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm pl-3 pr-10 py-2 border"
                 />
-              </Box>
-            </Grid>
-
-            <Grid item xs={12} sm={6} md={2}>
-              <FormControl fullWidth size="small">
-                <InputLabel>Status</InputLabel>
-                <Select
-                  value={statusFilter}
-                  label="Status"
-                  onChange={(e) => setStatusFilter(e.target.value)}
+                <button
+                  type="submit"
+                  className="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700"
                 >
-                  <MenuItem value="">All Statuses</MenuItem>
-                  {EVENT_STATUSES.map((status) => (
-                    <MenuItem key={status.value} value={status.value}>
-                      {status.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
+                  <SearchIcon fontSize="small" />
+                </button>
+              </div>
+            </form>
+          </div>
 
-            <Grid item xs={12} sm={6} md={2}>
-              <FormControl fullWidth size="small">
-                <InputLabel>Type</InputLabel>
-                <Select
-                  value={typeFilter}
-                  label="Type"
-                  onChange={(e) => setTypeFilter(e.target.value)}
-                >
-                  <MenuItem value="">All Types</MenuItem>
-                  {EVENT_TYPES.map((type) => (
-                    <MenuItem key={type.value} value={type.value}>
-                      {type.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
+          <div className="md:col-span-2">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm py-2 border"
+            >
+              <option value="">All Statuses</option>
+              {EVENT_STATUSES.map((status) => (
+                <option key={status.value} value={status.value}>
+                  {status.label}
+                </option>
+              ))}
+            </select>
+          </div>
 
-            <Grid item xs={12} sm={6} md={2}>
-              <FormControl fullWidth size="small">
-                <InputLabel>Sort By</InputLabel>
-                <Select
-                  value={sortBy}
-                  label="Sort By"
-                  onChange={(e) => setSortBy(e.target.value as SortField)}
-                >
-                  <MenuItem value="createdAt">Created Date</MenuItem>
-                  <MenuItem value="updatedAt">Updated Date</MenuItem>
-                  <MenuItem value="name">Name</MenuItem>
-                  <MenuItem value="maxCapacity">Capacity</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
+          <div className="md:col-span-2">
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm py-2 border"
+            >
+              <option value="">All Types</option>
+              {EVENT_TYPES.map((type) => (
+                <option key={type.value} value={type.value}>
+                  {type.label}
+                </option>
+              ))}
+            </select>
+          </div>
 
-            <Grid item xs={12} sm={6} md={2}>
-              <Box display="flex" gap={1}>
-                <FormControl size="small" sx={{ minWidth: 80 }}>
-                  <InputLabel>Order</InputLabel>
-                  <Select
-                    value={sortOrder}
-                    label="Order"
-                    onChange={(e) => setSortOrder(e.target.value as SortOrder)}
-                  >
-                    <MenuItem value="DESC">Desc</MenuItem>
-                    <MenuItem value="ASC">Asc</MenuItem>
-                  </Select>
-                </FormControl>
-                <Button
-                  variant="outlined"
-                  size="small"
-                  onClick={clearFilters}
-                  startIcon={<FilterIcon />}
-                >
-                  Clear
-                </Button>
-              </Box>
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
+          <div className="md:col-span-2">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortField)}
+              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm py-2 border"
+            >
+              <option value="createdAt">Created Date</option>
+              <option value="updatedAt">Updated Date</option>
+              <option value="name">Name</option>
+              <option value="maxCapacity">Capacity</option>
+            </select>
+          </div>
+
+          <div className="md:col-span-2 flex gap-2">
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value as SortOrder)}
+              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm py-2 border"
+            >
+              <option value="DESC">Desc</option>
+              <option value="ASC">Asc</option>
+            </select>
+            <button
+              onClick={clearFilters}
+              className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* Error Display */}
       {error && (
-        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
-          {error}
-        </Alert>
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+          <span className="block sm:inline">{error}</span>
+          <span className="absolute top-0 bottom-0 right-0 px-4 py-3" onClick={() => setError(null)}>
+            <svg className="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" /></svg>
+          </span>
+        </div>
       )}
 
       {/* Loading State */}
       {loading && (
-        <Box display="flex" justifyContent="center" py={4}>
-          <CircularProgress />
-        </Box>
+        <div className="flex justify-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+        </div>
       )}
 
       {/* Events Grid/List */}
       {!loading && (
         <>
           {events.length === 0 ? (
-            <Box textAlign="center" py={8}>
-              <Typography variant="h6" color="text.secondary" gutterBottom>
-                No events found
-              </Typography>
-              <Typography variant="body2" color="text.secondary" mb={2}>
+            <div className="text-center py-12 bg-white rounded-lg shadow">
+              <h3 className="mt-2 text-sm font-medium text-gray-900">No events found</h3>
+              <p className="mt-1 text-sm text-gray-500">
                 {search || statusFilter || typeFilter
                   ? 'Try adjusting your search criteria'
                   : 'Get started by creating your first event'}
-              </Typography>
+              </p>
               {permissions.canCreateEvents && !search && !statusFilter && !typeFilter && (
-                <Button
-                  variant="contained"
-                  startIcon={<AddIcon />}
-                  onClick={handleCreateEvent}
-                >
-                  Create Event
-                </Button>
+                <div className="mt-6">
+                  <button
+                    onClick={handleCreateEvent}
+                    className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  >
+                    <AddIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+                    Create Event
+                  </button>
+                </div>
               )}
-            </Box>
+            </div>
           ) : (
-            <Grid container spacing={viewMode === 'grid' ? 3 : 2}>
+            <div className={`grid gap-6 ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1'}`}>
               {events.map((event) => (
-                <Grid
-                  key={event.id}
-                  item
-                  xs={12}
-                  sm={viewMode === 'grid' ? 6 : 12}
-                  md={viewMode === 'grid' ? 4 : 12}
-                  lg={viewMode === 'grid' ? 3 : 12}
-                >
+                <div key={event.id} className="h-full">
                   <EventCard
                     event={event}
                     variant={viewMode === 'list' ? 'compact' : 'default'}
@@ -389,67 +343,85 @@ export const EventList: React.FC = () => {
                     onSubmitForApproval={handleSubmitForApproval}
                     onView={handleViewEvent}
                   />
-                </Grid>
+                </div>
               ))}
-            </Grid>
+            </div>
           )}
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <Box display="flex" justifyContent="center" mt={4}>
-              <Pagination
-                count={totalPages}
-                page={page}
-                onChange={handlePageChange}
-                color="primary"
-                size="large"
-              />
-            </Box>
+            <div className="flex justify-center mt-8">
+              <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                <button
+                  onClick={() => setPage(Math.max(1, page - 1))}
+                  disabled={page === 1}
+                  className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:bg-gray-100 disabled:text-gray-400"
+                >
+                  Previous
+                </button>
+                <div className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                  Page {page} of {totalPages}
+                </div>
+                <button
+                  onClick={() => setPage(Math.min(totalPages, page + 1))}
+                  disabled={page === totalPages}
+                  className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:bg-gray-100 disabled:text-gray-400"
+                >
+                  Next
+                </button>
+              </nav>
+            </div>
           )}
         </>
       )}
 
-      {/* Floating Action Button for Mobile */}
-      {permissions.canCreateEvents && (
-        <Fab
-          color="primary"
-          aria-label="Create Event"
-          onClick={handleCreateEvent}
-          sx={{
-            position: 'fixed',
-            bottom: 16,
-            right: 16,
-            display: { xs: 'flex', md: 'none' },
-          }}
-        >
-          <AddIcon />
-        </Fab>
-      )}
-
       {/* Delete Confirmation Dialog */}
-      <Dialog
-        open={Boolean(deleteConfirm)}
-        onClose={() => setDeleteConfirm(null)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Are you sure you want to delete "{deleteConfirm?.name}"?
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            This action cannot be undone.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteConfirm(null)}>Cancel</Button>
-          <Button onClick={confirmDelete} color="error" variant="contained">
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Container>
+      {deleteConfirm && (
+        <div className="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onClick={() => setDeleteConfirm(null)}></div>
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:items-start">
+                  <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                    <svg className="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                  </div>
+                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                      Confirm Delete
+                    </h3>
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-500">
+                        Are you sure you want to delete "{deleteConfirm.name}"? This action cannot be undone.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button
+                  type="button"
+                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                  onClick={confirmDelete}
+                >
+                  Delete
+                </button>
+                <button
+                  type="button"
+                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                  onClick={() => setDeleteConfirm(null)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

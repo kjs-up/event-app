@@ -44,18 +44,11 @@
       ],
       "@/types/*": [
         "src/types/*"
-      ],
-      "@/shared/*": [
-        "../../shared/*"
-      ],
-      "@/shared/types/*": [
-        "../../shared/types/*"
       ]
     }
   },
   "include": [
-    "src",
-    "../../shared/types"
+    "src"
   ],
   "references": [
     {

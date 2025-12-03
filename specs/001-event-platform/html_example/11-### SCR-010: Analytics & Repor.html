@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics & Reporting</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        ::webkit-scrollbar { display: none;}
+        * { font-family: 'Inter', sans-serif; }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4A90E2',
+                        accent: '#FFCE00',
+                        danger: '#D0021B'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+
+<header id="header" class="bg-white shadow-sm border-b border-gray-200">
+    <div class="max-w-full mx-auto px-6 py-4">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-8">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-calendar-check text-primary text-2xl"></i>
+                    <span class="text-xl font-bold text-gray-900">EventPro</span>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">Dashboard</a>
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">Create Event</a>
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">My Events</a>
+                    <a href="#" class="text-primary font-medium">Reports</a>
+                </nav>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center bg-gray-100 rounded-lg p-1">
+                    <button class="px-3 py-1 bg-white rounded-md shadow-sm text-sm font-medium text-primary">EN</button>
+                    <button class="px-3 py-1 text-sm font-medium text-gray-600">TH</button>
+                </div>
+                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full">
+            </div>
+        </div>
+    </div>
+</header>
+
+<div id="report-controls" class="bg-white border-b border-gray-200">
+    <div class="max-w-full mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div>
+                    <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-sm">
+                        <option>Last 30 days</option>
+                        <option>Last Quarter</option>
+                        <option>Last Year</option>
+                        <option>Custom Range</option>
+                    </select>
+                </div>
+                <div>
+                    <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-sm">
+                        <option>All Events</option>
+                        <option>Tech Conference 2024</option>
+                        <option>Summer Music Festival</option>
+                        <option>Motor Show 2024</option>
+                    </select>
+                </div>
+                <div>
+                    <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-sm">
+                        <option>All Event Types</option>
+                        <option>Concerts</option>
+                        <option>Tech Talks</option>
+                        <option>Motor Shows</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 flex items-center">
+                    <i class="fa-solid fa-file-pdf text-danger mr-2"></i>
+                    Export PDF
+                </button>
+                <button class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 flex items-center">
+                    <i class="fa-solid fa-file-excel text-green-600 mr-2"></i>
+                    Export Excel
+                </button>
+                <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-blue-600 flex items-center">
+                    <i class="fa-solid fa-share-nodes mr-2"></i>
+                    Share Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<main id="main-content" class="max-w-full mx-auto px-6 py-6">
+    <div class="grid grid-cols-12 gap-6">
+        <div id="sidebar-widgets" class="col-span-2">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                <h3 class="text-sm font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fa-solid fa-grip text-primary mr-2"></i>
+                    Widget Library
+                </h3>
+                <div class="space-y-2">
+                    <div class="p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-primary hover:text-white transition-colors">
+                        <i class="fa-solid fa-chart-line mr-2"></i>
+                        <span class="text-xs font-medium">Revenue Chart</span>
+                    </div>
+                    <div class="p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-primary hover:text-white transition-colors">
+                        <i class="fa-solid fa-chart-bar mr-2"></i>
+                        <span class="text-xs font-medium">Attendance</span>
+                    </div>
+                    <div class="p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-primary hover:text-white transition-colors">
+                        <i class="fa-solid fa-chart-pie mr-2"></i>
+                        <span class="text-xs font-medium">Demographics</span>
+                    </div>
+                    <div class="p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-primary hover:text-white transition-colors">
+                        <i class="fa-solid fa-map-location-dot mr-2"></i>
+                        <span class="text-xs font-medium">Geographic Map</span>
+                    </div>
+                    <div class="p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-primary hover:text-white transition-colors">
+                        <i class="fa-solid fa-filter mr-2"></i>
+                        <span class="text-xs font-medium">Conversion Funnel</span>
+                    </div>
+                    <div class="p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-primary hover:text-white transition-colors">
+                        <i class="fa-solid fa-dollar-sign mr-2"></i>
+                        <span class="text-xs font-medium">Customer LTV</span>
+                    </div>
+                    <div class="p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-primary hover:text-white transition-colors">
+                        <i class="fa-solid fa-hashtag mr-2"></i>
+                        <span class="text-xs font-medium">Social Media</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mt-4">
+                <h3 class="text-sm font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                <div class="space-y-2">
+                    <button class="w-full text-left p-2 text-xs bg-gray-50 rounded-lg hover:bg-gray-100">
+                        <i class="fa-solid fa-file-circle-plus text-primary mr-2"></i>
+                        Create Report
+                    </button>
+                    <button class="w-full text-left p-2 text-xs bg-gray-50 rounded-lg hover:bg-gray-100">
+                        <i class="fa-solid fa-clock text-primary mr-2"></i>
+                        Schedule Report
+                    </button>
+                    <button class="w-full text-left p-2 text-xs bg-gray-50 rounded-lg hover:bg-gray-100">
+                        <i class="fa-solid fa-bell text-primary mr-2"></i>
+                        Set Alert
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="dashboard-grid" class="col-span-10">
+            <div class="grid grid-cols-4 gap-6 mb-6">
+                <div id="kpi-card-1" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm text-gray-600">Total Revenue</span>
+                        <i class="fa-solid fa-dollar-sign text-green-600"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-gray-900 mb-1">$847,392</div>
+                    <div class="flex items-center text-sm">
+                        <i class="fa-solid fa-arrow-up text-green-600 mr-1"></i>
+                        <span class="text-green-600 font-medium">12.5%</span>
+                        <span class="text-gray-500 ml-1">vs last period</span>
+                    </div>
+                </div>
+
+                <div id="kpi-card-2" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm text-gray-600">Total Attendees</span>
+                        <i class="fa-solid fa-users text-primary"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-gray-900 mb-1">24,567</div>
+                    <div class="flex items-center text-sm">
+                        <i class="fa-solid fa-arrow-up text-green-600 mr-1"></i>
+                        <span class="text-green-600 font-medium">8.2%</span>
+                        <span class="text-gray-500 ml-1">vs last period</span>
+                    </div>
+                </div>
+
+                <div id="kpi-card-3" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm text-gray-600">Active Events</span>
+                        <i class="fa-solid fa-calendar-check text-accent"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-gray-900 mb-1">18</div>
+                    <div class="flex items-center text-sm">
+                        <i class="fa-solid fa-arrow-down text-danger mr-1"></i>
+                        <span class="text-danger font-medium">2.1%</span>
+                        <span class="text-gray-500 ml-1">vs last period</span>
+                    </div>
+                </div>
+
+                <div id="kpi-card-4" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm text-gray-600">Conversion Rate</span>
+                        <i class="fa-solid fa-chart-line text-primary"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-gray-900 mb-1">68.4%</div>
+                    <div class="flex items-center text-sm">
+                        <i class="fa-solid fa-arrow-up text-green-600 mr-1"></i>
+                        <span class="text-green-600 font-medium">5.3%</span>
+                        <span class="text-gray-500 ml-1">vs last period</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-6 mb-6">
+                <div id="revenue-chart-widget" class="col-span-2 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Revenue Trend</h3>
+                        <div class="flex items-center space-x-2">
+                            <button class="px-3 py-1 text-xs bg-primary text-white rounded-md">Daily</button>
+                            <button class="px-3 py-1 text-xs bg-gray-100 text-gray-600 rounded-md">Weekly</button>
+                            <button class="px-3 py-1 text-xs bg-gray-100 text-gray-600 rounded-md">Monthly</button>
+                        </div>
+                    </div>
+                    <div id="revenue-chart" style="height: 300px;"></div>
+                </div>
+
+                <div id="ticket-distribution" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Ticket Types</h3>
+                    <div id="ticket-pie-chart" style="height: 300px;"></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-6 mb-6">
+                <div id="attendance-demographics" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Attendee Demographics</h3>
+                        <button class="text-sm text-primary hover:underline">View Details</button>
+                    </div>
+                    <div id="demographics-chart" style="height: 280px;"></div>
+                </div>
+
+                <div id="geographic-distribution" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Top Locations</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fa-solid fa-location-dot text-primary mr-3"></i>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Bangkok</p>
+                                    <p class="text-xs text-gray-500">Thailand</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-semibold text-gray-900">8,432</p>
+                                <div class="w-32 bg-gray-200 rounded-full h-2 mt-1">
+                                    <div class="bg-primary h-2 rounded-full" style="width: 85%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fa-solid fa-location-dot text-primary mr-3"></i>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Singapore</p>
+                                    <p class="text-xs text-gray-500">Singapore</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-semibold text-gray-900">5,234</p>
+                                <div class="w-32 bg-gray-200 rounded-full h-2 mt-1">
+                                    <div class="bg-primary h-2 rounded-full" style="width: 52%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fa-solid fa-location-dot text-primary mr-3"></i>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Kuala Lumpur</p>
+                                    <p class="text-xs text-gray-500">Malaysia</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-semibold text-gray-900">3,891</p>
+                                <div class="w-32 bg-gray-200 rounded-full h-2 mt-1">
+                                    <div class="bg-primary h-2 rounded-full" style="width: 39%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fa-solid fa-location-dot text-primary mr-3"></i>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Hong Kong</p>
+                                    <p class="text-xs text-gray-500">Hong Kong</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-semibold text-gray-900">2,567</p>
+                                <div class="w-32 bg-gray-200 rounded-full h-2 mt-1">
+                                    <div class="bg-primary h-2 rounded-full" style="width: 26%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fa-solid fa-location-dot text-primary mr-3"></i>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Manila</p>
+                                    <p class="text-xs text-gray-500">Philippines</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-semibold text-gray-900">1,943</p>
+                                <div class="w-32 bg-gray-200 rounded-full h-2 mt-1">
+                                    <div class="bg-primary h-2 rounded-full" style="width: 19%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-6 mb-6">
+                <div id="conversion-funnel" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Conversion Funnel</h3>
+                    <div id="funnel-chart" style="height: 320px;"></div>
+                </div>
+
+                <div id="payment-methods" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Payment Methods</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fa-brands fa-cc-visa text-2xl text-blue-600 mr-3"></i>
+                                <span class="text-sm font-medium text-gray-900">Credit Card</span>
+                            </div>
+                            <span class="text-sm font-semibold text-gray-900">54%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-blue-600 h-2 rounded-full" style="width: 54%"></div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fa-brands fa-paypal text-2xl text-blue-500 mr-3"></i>
+                                <span class="text-sm font-medium text-gray-900">PayPal</span>
+                            </div>
+                            <span class="text-sm font-semibold text-gray-900">28%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-blue-500 h-2 rounded-full" style="width: 28%"></div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fa-solid fa-mobile-screen text-2xl text-green-600 mr-3"></i>
+                                <span class="text-sm font-medium text-gray-900">Mobile Wallet</span>
+                            </div>
+                            <span class="text-sm font-semibold text-gray-900">13%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-green-600 h-2 rounded-full" style="width: 13%"></div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fa-solid fa-building-columns text-2xl text-gray-600 mr-3"></i>
+                                <span class="text-sm font-medium text-gray-900">Bank Transfer</span>
+                            </div>
+                            <span class="text-sm font-semibold text-gray-900">5%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-gray-600 h-2 rounded-full" style="width: 5%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="customer-lifetime-value" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Customer Segments</h3>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg border border-yellow-200">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-900">VIP Customers</span>
+                                <i class="fa-solid fa-crown text-accent"></i>
+                            </div>
+                            <div class="text-2xl font-bold text-gray-900">$4,892</div>
+                            <p class="text-xs text-gray-600 mt-1">Avg. Lifetime Value</p>
+                        </div>
+                        <div class="p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg border border-blue-200">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-900">Regular Attendees</span>
+                                <i class="fa-solid fa-star text-primary"></i>
+                            </div>
+                            <div class="text-2xl font-bold text-gray-900">$1,234</div>
+                            <p class="text-xs text-gray-600 mt-1">Avg. Lifetime Value</p>
+                        </div>
+                        <div class="p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg border border-gray-200">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-900">First-Time Visitors</span>
+                                <i class="fa-solid fa-user text-gray-600"></i>
+                            </div>
+                            <div class="text-2xl font-bold text-gray-900">$287</div>
+                            <p class="text-xs text-gray-600 mt-1">Avg. Lifetime Value</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="report-builder-section" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900">Custom Report Builder</h3>
+                    <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-blue-600 flex items-center">
+                        <i class="fa-solid fa-plus mr-2"></i>
+                        Create New Report
+                    </button>
+                </div>
+                <div class="grid grid-cols-4 gap-4">
+                    <div class="p-4 border border-gray-200 rounded-lg hover:border-primary cursor-pointer">
+                        <i class="fa-solid fa-file-lines text-3xl text-primary mb-3"></i>
+                        <h4 class="text-sm font-semibold text-gray-900 mb-1">Revenue Report</h4>
+                        <p class="text-xs text-gray-600">Last updated: 2 hours ago</p>
+                    </div>
+                    <div class="p-4 border border-gray-200 rounded-lg hover:border-primary cursor-pointer">
+                        <i class="fa-solid fa-users text-3xl text-primary mb-3"></i>
+                        <h4 class="text-sm font-semibold text-gray-900 mb-1">Attendee Analysis</h4>
+                        <p class="text-xs text-gray-600">Last updated: 5 hours ago</p>
+                    </div>
+                    <div class="p-4 border border-gray-200 rounded-lg hover:border-primary cursor-pointer">
+                        <i class="fa-solid fa-chart-column text-3xl text-primary mb-3"></i>
+                        <h4 class="text-sm font-semibold text-gray-900 mb-1">Sales Performance</h4>
+                        <p class="text-xs text-gray-600">Last updated: 1 day ago</p>
+                    </div>
+                    <div class="p-4 border border-gray-200 rounded-lg hover:border-primary cursor-pointer">
+                        <i class="fa-solid fa-envelope text-3xl text-primary mb-3"></i>
+                        <h4 class="text-sm font-semibold text-gray-900 mb-1">Marketing ROI</h4>
+                        <p class="text-xs text-gray-600">Last updated: 3 days ago</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer id="footer" class="bg-white border-t border-gray-200 mt-8">
+    <div class="max-w-full mx-auto px-6 py-6">
+        <div class="flex items-center justify-between">
+            <p class="text-sm text-gray-600">© 2024 EventPro. All rights reserved.</p>
+            <div class="flex items-center space-x-6">
+                <a href="#" class="text-sm text-gray-600 hover:text-primary">Help Center</a>
+                <a href="#" class="text-sm text-gray-600 hover:text-primary">API Documentation</a>
+                <a href="#" class="text-sm text-gray-600 hover:text-primary">Privacy Policy</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+window.addEventListener('load', function() {
+    try {
+        var revenueData = [{
+            type: 'scatter',
+            mode: 'lines',
+            x: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            y: [45000, 52000, 48000, 61000, 58000, 67000, 72000, 68000, 75000, 82000, 78000, 85000],
+            line: { color: '#4A90E2', width: 3 },
+            fill: 'tozeroy',
+            fillcolor: 'rgba(74, 144, 226, 0.1)'
+        }];
+        var revenueLayout = {
+            margin: { t: 20, r: 20, b: 40, l: 60 },
+            plot_bgcolor: '#ffffff',
+            paper

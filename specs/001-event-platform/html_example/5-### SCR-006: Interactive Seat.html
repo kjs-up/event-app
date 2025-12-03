@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seat Selection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        ::webkit-scrollbar { display: none;}
+        * { font-family: 'Inter', sans-serif; }
+        .seat { 
+            width: 24px; 
+            height: 24px; 
+            margin: 2px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            transition: all 0.2s ease;
+            border: 1px solid #e5e7eb;
+        }
+        .seat:hover { transform: scale(1.1); }
+        .seat.available { background-color: #10b981; }
+        .seat.selected { background-color: #4A90E2; }
+        .seat.held { background-color: #FFCE00; }
+        .seat.unavailable { background-color: #D0021B; }
+        .seat.accessibility { background-color: #8b5cf6; }
+        .seat.vip { background-color: #f59e0b; }
+        .venue-map { 
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 12px;
+            position: relative;
+        }
+        .stage { 
+            background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+            border-radius: 8px;
+            color: white;
+        }
+        .countdown { animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4A90E2',
+                        accent: '#FFCE00',
+                        danger: '#D0021B'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+
+<header id="header" class="bg-white shadow-sm border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-8">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-calendar-check text-primary text-2xl"></i>
+                    <span class="text-xl font-bold text-gray-900">EventPro</span>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">Dashboard</a>
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">Events</a>
+                    <a href="#" class="text-primary font-medium">Tickets</a>
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">My Account</a>
+                </nav>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center bg-gray-100 rounded-lg p-1">
+                    <button class="px-3 py-1 bg-white rounded-md shadow-sm text-sm font-medium text-primary">EN</button>
+                    <button class="px-3 py-1 text-sm font-medium text-gray-600">TH</button>
+                </div>
+                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full">
+            </div>
+        </div>
+    </div>
+</header>
+
+<div id="breadcrumb" class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-3">
+        <div class="flex items-center space-x-2 text-sm">
+            <a href="#" class="text-gray-500 hover:text-primary">Events</a>
+            <i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i>
+            <a href="#" class="text-gray-500 hover:text-primary">Summer Music Festival 2024</a>
+            <i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i>
+            <span class="text-gray-900 font-medium">Select Seats</span>
+        </div>
+    </div>
+</div>
+
+<main id="main-content" class="max-w-7xl mx-auto px-6 py-6">
+    <div id="event-header" class="mb-6">
+        <div class="flex items-start justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 mb-2">Summer Music Festival 2024</h1>
+                <div class="flex items-center space-x-4 text-sm text-gray-600">
+                    <span><i class="fa-solid fa-calendar mr-1"></i>July 15, 2024</span>
+                    <span><i class="fa-solid fa-clock mr-1"></i>7:00 PM</span>
+                    <span><i class="fa-solid fa-map-marker-alt mr-1"></i>Central Arena</span>
+                </div>
+            </div>
+            <div id="timer-warning" class="bg-accent text-gray-900 px-4 py-2 rounded-lg countdown">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-clock"></i>
+                    <span class="font-medium">4:23 remaining to complete selection</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-12 gap-6">
+        <div id="venue-section" class="col-span-8">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-semibold text-gray-900">Select Your Seats</h2>
+                    <div class="flex items-center space-x-4">
+                        <button class="flex items-center space-x-2 px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50">
+                            <i class="fa-solid fa-search-plus"></i>
+                            <span>Zoom In</span>
+                        </button>
+                        <button class="flex items-center space-x-2 px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50">
+                            <i class="fa-solid fa-search-minus"></i>
+                            <span>Zoom Out</span>
+                        </button>
+                        <button class="flex items-center space-x-2 px-3 py-2 bg-primary text-white rounded-lg text-sm hover:bg-blue-600">
+                            <i class="fa-solid fa-magic"></i>
+                            <span>Best Available</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="seat-legend" class="flex flex-wrap gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center space-x-2">
+                        <div class="seat available"></div>
+                        <span class="text-sm text-gray-700">Available</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="seat selected"></div>
+                        <span class="text-sm text-gray-700">Selected</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="seat held"></div>
+                        <span class="text-sm text-gray-700">Held</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="seat unavailable"></div>
+                        <span class="text-sm text-gray-700">Unavailable</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="seat accessibility"></div>
+                        <span class="text-sm text-gray-700">Accessible</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="seat vip"></div>
+                        <span class="text-sm text-gray-700">VIP/Premium</span>
+                    </div>
+                </div>
+
+                <div id="venue-map" class="venue-map p-8 min-h-[600px]">
+                    <div class="stage mx-auto w-80 h-16 flex items-center justify-center mb-8">
+                        <span class="font-semibold text-lg">STAGE</span>
+                    </div>
+
+                    <div id="seating-sections" class="space-y-6">
+                        <div id="section-a" class="text-center">
+                            <h3 class="text-sm font-medium text-gray-700 mb-3">Section A - VIP ($150)</h3>
+                            <div class="flex justify-center">
+                                <div class="grid grid-cols-10 gap-1">
+                                    <div class="seat vip" data-section="A" data-row="1" data-seat="1"></div>
+                                    <div class="seat vip" data-section="A" data-row="1" data-seat="2"></div>
+                                    <div class="seat unavailable" data-section="A" data-row="1" data-seat="3"></div>
+                                    <div class="seat unavailable" data-section="A" data-row="1" data-seat="4"></div>
+                                    <div class="seat vip" data-section="A" data-row="1" data-seat="5"></div>
+                                    <div class="seat vip" data-section="A" data-row="1" data-seat="6"></div>
+                                    <div class="seat held" data-section="A" data-row="1" data-seat="7"></div>
+                                    <div class="seat held" data-section="A" data-row="1" data-seat="8"></div>
+                                    <div class="seat vip" data-section="A" data-row="1" data-seat="9"></div>
+                                    <div class="seat vip" data-section="A" data-row="1" data-seat="10"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="section-b" class="text-center">
+                            <h3 class="text-sm font-medium text-gray-700 mb-3">Section B - Premium ($120)</h3>
+                            <div class="flex justify-center">
+                                <div class="grid grid-cols-12 gap-1">
+                                    <div class="seat available" data-section="B" data-row="1" data-seat="1"></div>
+                                    <div class="seat available" data-section="B" data-row="1" data-seat="2"></div>
+                                    <div class="seat selected" data-section="B" data-row="1" data-seat="3"></div>
+                                    <div class="seat selected" data-section="B" data-row="1" data-seat="4"></div>
+                                    <div class="seat available" data-section="B" data-row="1" data-seat="5"></div>
+                                    <div class="seat available" data-section="B" data-row="1" data-seat="6"></div>
+                                    <div class="seat available" data-section="B" data-row="1" data-seat="7"></div>
+                                    <div class="seat available" data-section="B" data-row="1" data-seat="8"></div>
+                                    <div class="seat unavailable" data-section="B" data-row="1" data-seat="9"></div>
+                                    <div class="seat unavailable" data-section="B" data-row="1" data-seat="10"></div>
+                                    <div class="seat accessibility" data-section="B" data-row="1" data-seat="11"></div>
+                                    <div class="seat accessibility" data-section="B" data-row="1" data-seat="12"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="section-c" class="text-center">
+                            <h3 class="text-sm font-medium text-gray-700 mb-3">Section C - Standard ($85)</h3>
+                            <div class="flex justify-center">
+                                <div class="grid grid-cols-15 gap-1">
+                                    <div class="seat available" data-section="C" data-row="1" data-seat="1"></div>
+                                    <div class="seat available" data-section="C" data-row="1" data-seat="2"></div>
+                                    <div class="seat available" data-section="C" data-row="1" data-seat="3"></div>
+                                    <div class="seat available" data-section="C" data-row="1" data-seat="4"></div>
+                                    <div class="seat available" data-section="C" data-row="1" data-seat="5"></div>
+                                    <div class="seat held" data-section="C" data-row="1" data-seat="6"></div>
+                                    <div class="seat held" data-section="C" data-row="1" data-seat="7"></div>
+                                    <div class="seat available" data-section="C" data-row="1" data-seat="8"></div>
+                                    <div class="seat available" data-section="C" data-row="1" data-seat="9"></div>
+                                    <div class="seat available" data-section="C" data-row="1" data-seat="10"></div>
+                                    <div class="seat unavailable" data-section="C" data-row="1" data-seat="11"></div>
+                                    <div class="seat unavailable" data-section="C" data-row="1" data-seat="12"></div>
+                                    <div class="seat available" data-section="C" data-row="1" data-seat="13"></div>
+                                    <div class="seat available" data-section="C" data-row="1" data-seat="14"></div>
+                                    <div class="seat available" data-section="C" data-row="1" data-seat="15"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="selection-sidebar" class="col-span-4">
+            <div class="space-y-6">
+                <div id="seat-filters" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Filter Options</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Price Range</label>
+                            <div class="flex items-center space-x-3">
+                                <input type="range" min="50" max="200" value="150" class="flex-1">
+                                <span class="text-sm font-medium text-primary">$50-$150</span>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Number of Seats</label>
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                                <option>1 seat</option>
+                                <option selected>2 seats</option>
+                                <option>3 seats</option>
+                                <option>4 seats</option>
+                                <option>5+ seats</option>
+                            </select>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded">
+                                <span class="ml-2 text-sm text-gray-700">Wheelchair accessible</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded">
+                                <span class="ml-2 text-sm text-gray-700">Keep seats together</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" checked class="w-4 h-4 text-primary border-gray-300 rounded">
+                                <span class="ml-2 text-sm text-gray-700">Best view priority</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="selected-seats" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Selected Seats</h3>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Section B, Row 1, Seat 3</p>
+                                <p class="text-xs text-gray-600">Premium - Great view</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-medium text-gray-900">$120</p>
+                                <button class="text-xs text-danger hover:underline">Remove</button>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Section B, Row 1, Seat 4</p>
+                                <p class="text-xs text-gray-600">Premium - Great view</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-medium text-gray-900">$120</p>
+                                <button class="text-xs text-danger hover:underline">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-gray-600">Subtotal (2 seats)</span>
+                            <span class="font-medium">$240.00</span>
+                        </div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-gray-600">Service fee</span>
+                            <span class="font-medium">$12.00</span>
+                        </div>
+                        <div class="flex justify-between text-lg font-semibold">
+                            <span>Total</span>
+                            <span class="text-primary">$252.00</span>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full mt-4 bg-primary text-white py-3 rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                        Continue to Checkout
+                    </button>
+                    
+                    <button class="w-full mt-2 border border-gray-300 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors">
+                        Clear Selection
+                    </button>
+                </div>
+
+                <div id="seat-recommendations" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Recommended for You</h3>
+                    
+                    <div class="space-y-3">
+                        <div class="p-3 border border-gray-200 rounded-lg hover:border-primary cursor-pointer">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Section C, Row 2</p>
+                                    <p class="text-xs text-gray-600">2 seats together</p>
+                                </div>
+                                <span class="text-sm font-medium text-primary">$170</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3 border border-gray-200 rounded-lg hover:border-primary cursor-pointer">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Section A, Row 3</p>
+                                    <p class="text-xs text-gray-600">VIP experience</p>
+                                </div>
+                                <span class="text-sm font-medium text-primary">$300</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer id="footer" class="bg-white border-t border-gray-200 mt-8">
+    <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="flex items-center justify-between text-sm text-gray-600">
+            <div class="flex items-center space-x-4">
+                <span>Need help? <a href="#" class="text-primary hover:underline">Contact Support</a></span>
+                <span>|</span>
+                <a href="#" class="hover:text-primary">Seating Chart Guide</a>
+                <span>|</span>
+                <a href="#" class="hover:text-primary">Accessibility Info</a>
+            </div>
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-shield-alt text-green-600"></i>
+                <span>Secure SSL Connection</span>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+window.addEventListener('load', function() {
+    const seats = document.querySelectorAll('.seat');
+    
+    seats.forEach(seat => {
+        seat.addEventListener('click', function() {
+            if (this.classList.contains('available') || this.classList.contains('vip')) {
+                this.classList.remove('available', 'vip');
+                this.classList.add('selected');
+            } else if (this.classList.contains('selected')) {
+                this.classList.remove('selected');
+                this.classList.add('available');
+            }
+        });
+        
+        seat.addEventListener('mouseenter', function() {
+            if (!this.classList.contains('unavailable') && !this.classList.contains('held')) {
+                const section = this.dataset.section;
+                const row = this.dataset.row;
+                const seatNum = this.dataset.seat;
+                
+                const tooltip = document.createElement('div');
+                tooltip.className = 'absolute bg-gray-900 text-white text-xs px-2 py-1 rounded shadow-lg z-50';
+                tooltip.textContent = `Section ${section}, Row ${row}, Seat ${seatNum}`;
+                tooltip.style.left = this.offsetLeft + 'px';
+                tooltip.style.top = (this.offsetTop - 30) + 'px';
+                tooltip.id = 'seat-tooltip';
+                
+                this.parentElement.appendChild(tooltip);
+            }
+        });
+        
+        seat.addEventListener('mouseleave', function() {
+            const tooltip = document.getElementById('seat-tooltip');
+            if (tooltip) {
+                tooltip.remove();
+            }
+        });
+    });
+    
+    let timeLeft = 263;
+    const timer = setInterval(function() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        const timerElement = document.querySelector('#timer-warning span');
+        if (timerElement) {
+            timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')} remaining to complete selection`;
+        }
+        timeLeft--;
+        
+        if (timeLeft < 0) {
+            clearInterval(timer);
+        }
+    }, 1000);
+});
+</script>
+
+</body>
+</html>

@@ -1,19 +1,5 @@
 import React from 'react';
 import {
-  Card,
-  CardContent,
-  CardActions,
-  Typography,
-  Chip,
-  Button,
-  Box,
-  Tooltip,
-  Avatar,
-  IconButton,
-  Menu,
-  MenuItem,
-} from '@mui/material';
-import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Send as SendIcon,
@@ -38,20 +24,20 @@ interface EventCardProps {
   showActions?: boolean;
 }
 
-const getStatusColor = (status: string): 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning' => {
+const getStatusColor = (status: string): string => {
   switch (status) {
     case 'draft':
-      return 'default';
+      return 'bg-gray-100 text-gray-800';
     case 'pending_approval':
-      return 'warning';
+      return 'bg-yellow-100 text-yellow-800';
     case 'approved':
-      return 'success';
+      return 'bg-green-100 text-green-800';
     case 'rejected':
-      return 'error';
+      return 'bg-red-100 text-red-800';
     case 'archived':
-      return 'secondary';
+      return 'bg-gray-200 text-gray-600';
     default:
-      return 'default';
+      return 'bg-gray-100 text-gray-800';
   }
 };
 
@@ -98,248 +84,154 @@ export const EventCard: React.FC<EventCardProps> = ({
   variant = 'default',
   showActions = true,
 }) => {
-  const { canModifyEvent, canViewEvent, permissions, isOwner } = useRole();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const { canModifyEvent, canViewEvent, isOwner } = useRole();
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const canEdit = canModifyEvent(event.createdBy, event.status);
   const canDelete = isOwner(event.createdBy) && event.status === 'draft';
   const canSubmit = isOwner(event.createdBy) && (event.status === 'draft' || event.status === 'rejected');
   const canViewDetails = canViewEvent(event.createdBy, event.status);
 
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleAction = (action: () => void) => {
-    action();
-    handleMenuClose();
-  };
-
   if (!canViewDetails) {
     return null;
   }
 
-  const cardContent = (
-    <CardContent sx={{ pb: variant === 'compact' ? 1 : 2 }}>
+  return (
+    <div className={`bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col h-full ${variant === 'compact' ? 'p-3' : 'p-4'}`}>
       {/* Header */}
-      <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={1}>
-        <Box display="flex" alignItems="center" gap={1} flex={1}>
-          <Typography variant="h6" component="span">
-            {getEventTypeIcon(event.eventType)}
-          </Typography>
-          <Typography
-            variant={variant === 'compact' ? 'subtitle2' : 'h6'}
-            component="h3"
-            noWrap
-            sx={{ fontWeight: 'medium' }}
-          >
+      <div className="flex justify-between items-start mb-2">
+        <div className="flex items-center gap-2 flex-1 min-w-0">
+          <span className="text-xl">{getEventTypeIcon(event.eventType)}</span>
+          <h3 className={`font-medium text-gray-900 truncate ${variant === 'compact' ? 'text-sm' : 'text-lg'}`}>
             {event.name}
-          </Typography>
-        </Box>
-        <Box display="flex" alignItems="center" gap={1}>
-          <Chip
-            label={getStatusLabel(event.status)}
-            color={getStatusColor(event.status)}
-            size="small"
-          />
+          </h3>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(event.status)}`}>
+            {getStatusLabel(event.status)}
+          </span>
           {showActions && (canEdit || canDelete || canSubmit) && (
-            <IconButton
-              size="small"
-              onClick={handleMenuClick}
-              aria-label="Event actions"
-            >
-              <MoreVertIcon />
-            </IconButton>
+            <div className="relative">
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="text-gray-400 hover:text-gray-600 focus:outline-none"
+              >
+                <MoreVertIcon fontSize="small" />
+              </button>
+              {isMenuOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-gray-100">
+                  {canEdit && onEdit && (
+                    <button
+                      onClick={() => { onEdit(event); setIsMenuOpen(false); }}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                    >
+                      <EditIcon fontSize="small" className="mr-2" /> Edit
+                    </button>
+                  )}
+                  {canSubmit && onSubmitForApproval && (
+                    <button
+                      onClick={() => { onSubmitForApproval(event); setIsMenuOpen(false); }}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                    >
+                      <SendIcon fontSize="small" className="mr-2" /> Submit
+                    </button>
+                  )}
+                  {canDelete && onDelete && (
+                    <button
+                      onClick={() => { onDelete(event); setIsMenuOpen(false); }}
+                      className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center"
+                    >
+                      <DeleteIcon fontSize="small" className="mr-2" /> Delete
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
           )}
-        </Box>
-      </Box>
+        </div>
+      </div>
 
       {/* Description */}
       {variant !== 'compact' && event.description && (
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{
-            mb: 2,
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-          }}
-        >
+        <p className="text-sm text-gray-500 mb-4 line-clamp-2 flex-grow">
           {event.description}
-        </Typography>
+        </p>
       )}
 
-      {/* Event Details */}
-      <Box display="flex" flexWrap="wrap" gap={1} mb={variant === 'detailed' ? 2 : 1}>
-        <Tooltip title="Event Type">
-          <Chip
-            icon={<EventIcon />}
-            label={event.eventType}
-            variant="outlined"
-            size="small"
-          />
-        </Tooltip>
-
-        <Tooltip title="Max Capacity">
-          <Chip
-            icon={<PeopleIcon />}
-            label={`${event.maxCapacity} people`}
-            variant="outlined"
-            size="small"
-          />
-        </Tooltip>
-
+      {/* Details Chips */}
+      <div className={`flex flex-wrap gap-2 ${variant === 'detailed' ? 'mb-4' : 'mb-2'}`}>
+        <div className="inline-flex items-center px-2 py-1 rounded-md bg-gray-50 text-xs text-gray-700 border border-gray-200" title="Event Type">
+          <EventIcon fontSize="small" className="mr-1 text-gray-400" style={{ fontSize: 16 }} />
+          {event.eventType}
+        </div>
+        <div className="inline-flex items-center px-2 py-1 rounded-md bg-gray-50 text-xs text-gray-700 border border-gray-200" title="Max Capacity">
+          <PeopleIcon fontSize="small" className="mr-1 text-gray-400" style={{ fontSize: 16 }} />
+          {event.maxCapacity}
+        </div>
         {event.isPaid && (
-          <Tooltip title="Paid Event">
-            <Chip
-              icon={<MoneyIcon />}
-              label={`${event.currency} ${event.basePrice}`}
-              variant="outlined"
-              size="small"
-              color="primary"
-            />
-          </Tooltip>
+          <div className="inline-flex items-center px-2 py-1 rounded-md bg-blue-50 text-xs text-blue-700 border border-blue-200" title="Paid Event">
+            <MoneyIcon fontSize="small" className="mr-1 text-blue-400" style={{ fontSize: 16 }} />
+            {event.currency} {event.basePrice}
+          </div>
         )}
-
         {event.hasSpeakers && (
-          <Tooltip title="Has Speakers">
-            <Chip
-              icon={<PersonIcon />}
-              label="Speakers"
-              variant="outlined"
-              size="small"
-              color="secondary"
-            />
-          </Tooltip>
+          <div className="inline-flex items-center px-2 py-1 rounded-md bg-purple-50 text-xs text-purple-700 border border-purple-200" title="Has Speakers">
+            <PersonIcon fontSize="small" className="mr-1 text-purple-400" style={{ fontSize: 16 }} />
+            Speakers
+          </div>
         )}
-      </Box>
+      </div>
 
-      {/* Timestamps and Creator Info */}
+      {/* Detailed Info */}
       {variant === 'detailed' && (
-        <Box>
-          <Typography variant="caption" color="text.secondary" display="block">
+        <div className="mt-auto border-t border-gray-100 pt-2 space-y-1">
+          <p className="text-xs text-gray-500">
             Created: {format(new Date(event.createdAt), 'MMM dd, yyyy HH:mm')}
-          </Typography>
+          </p>
           {event.creator && (
-            <Typography variant="caption" color="text.secondary" display="block">
+            <p className="text-xs text-gray-500">
               By: {event.creator.firstName} {event.creator.lastName}
-            </Typography>
+            </p>
           )}
           {event.approvedAt && event.approver && (
-            <Typography variant="caption" color="text.secondary" display="block">
+            <p className="text-xs text-gray-500">
               Approved: {format(new Date(event.approvedAt), 'MMM dd, yyyy HH:mm')} by {event.approver.firstName} {event.approver.lastName}
-            </Typography>
+            </p>
           )}
           {event.rejectionReason && (
-            <Typography variant="caption" color="error.main" display="block" sx={{ mt: 1 }}>
+            <p className="text-xs text-red-600 mt-1">
               Rejection: {event.rejectionReason}
-            </Typography>
+            </p>
           )}
-        </Box>
+        </div>
       )}
-    </CardContent>
-  );
 
-  const cardActions = showActions && (
-    <CardActions sx={{ pt: 0, justifyContent: 'space-between' }}>
-      <Box>
-        {onView && (
-          <Button
-            size="small"
-            startIcon={<ViewIcon />}
-            onClick={() => onView(event)}
-          >
-            View Details
-          </Button>
-        )}
-      </Box>
-
-      <Box>
-        {canSubmit && onSubmitForApproval && (
-          <Button
-            size="small"
-            variant="contained"
-            color="primary"
-            startIcon={<SendIcon />}
-            onClick={() => onSubmitForApproval(event)}
-          >
-            Submit for Approval
-          </Button>
-        )}
-      </Box>
-    </CardActions>
-  );
-
-  return (
-    <>
-      <Card
-        variant="outlined"
-        sx={{
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          transition: 'all 0.2s ease-in-out',
-          '&:hover': {
-            boxShadow: 2,
-            transform: 'translateY(-2px)',
-          },
-          ...(variant === 'compact' && {
-            '&:hover': {
-              boxShadow: 1,
-              transform: 'none',
-            },
-          }),
-        }}
-      >
-        {cardContent}
-        {cardActions}
-      </Card>
-
-      {/* Action Menu */}
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-      >
-        {canEdit && onEdit && (
-          <MenuItem onClick={() => handleAction(() => onEdit(event))}>
-            <EditIcon sx={{ mr: 1 }} />
-            Edit
-          </MenuItem>
-        )}
-
-        {canSubmit && onSubmitForApproval && (
-          <MenuItem onClick={() => handleAction(() => onSubmitForApproval(event))}>
-            <SendIcon sx={{ mr: 1 }} />
-            Submit for Approval
-          </MenuItem>
-        )}
-
-        {canDelete && onDelete && (
-          <MenuItem
-            onClick={() => handleAction(() => onDelete(event))}
-            sx={{ color: 'error.main' }}
-          >
-            <DeleteIcon sx={{ mr: 1 }} />
-            Delete
-          </MenuItem>
-        )}
-      </Menu>
-    </>
+      {/* Actions Footer */}
+      {showActions && (
+        <div className="mt-auto pt-3 flex justify-between items-center border-t border-gray-100">
+          <div>
+            {onView && (
+              <button
+                onClick={() => onView(event)}
+                className="text-sm text-gray-600 hover:text-gray-900 flex items-center font-medium"
+              >
+                <ViewIcon fontSize="small" className="mr-1" /> View
+              </button>
+            )}
+          </div>
+          <div>
+            {canSubmit && onSubmitForApproval && (
+              <button
+                onClick={() => onSubmitForApproval(event)}
+                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                <SendIcon fontSize="small" className="mr-1" style={{ fontSize: 14 }} /> Submit
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

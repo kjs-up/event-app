@@ -1,10 +1,18 @@
 import axios, {
   AxiosInstance,
-  AxiosRequestConfig,
+  AxiosError,
+  InternalAxiosRequestConfig,
   AxiosResponse,
-  InternalAxiosRequestConfig
+  AxiosRequestConfig
 } from 'axios';
 import toast from 'react-hot-toast';
+
+// Extend InternalAxiosRequestConfig to include metadata
+interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
+  metadata?: {
+    startTime: number;
+  };
+}
 
 // API Response interface
 interface ApiResponse<T = any> {
@@ -47,14 +55,13 @@ const apiClient: AxiosInstance = axios.create(API_CONFIG);
 
 // Request interceptor
 apiClient.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    // Add auth token if available
+  (config: CustomAxiosRequestConfig) => {
     const token = localStorage.getItem('auth_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // Add request timestamp for debugging
+    // Add timestamp for request duration tracking
     config.metadata = { startTime: Date.now() };
 
     // Log request in development
@@ -77,8 +84,12 @@ apiClient.interceptors.request.use(
 // Response interceptor
 apiClient.interceptors.response.use(
   (response: AxiosResponse<ApiResponse>) => {
-    const { config } = response;
-    const duration = Date.now() - (config as any).metadata?.startTime;
+    const config = response.config as CustomAxiosRequestConfig;
+    let duration = 0;
+    if (config.metadata) {
+      duration = Date.now() - config.metadata.startTime;
+      console.debug(`Request to ${config.url} took ${duration}ms`);
+    }
 
     // Log response in development
     if (import.meta.env.DEV) {

@@ -1,18 +1,5 @@
 import React from 'react';
 import {
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  Avatar,
-  Menu,
-  MenuItem,
-  Divider,
-  Box,
-  Badge,
-  Tooltip,
-} from '@mui/material';
-import {
   Menu as MenuIcon,
   AccountCircle,
   Logout,
@@ -20,7 +7,6 @@ import {
   Notifications,
   Person,
 } from '@mui/icons-material';
-
 import { useAuth } from '../../contexts/AuthContext';
 
 interface HeaderProps {
@@ -39,129 +25,98 @@ export function Header({
   onLogout,
 }: HeaderProps) {
   const { user } = useAuth();
+  const isMenuOpen = Boolean(userMenuAnchor);
 
   return (
-    <AppBar
-      position="fixed"
-      sx={{
-        width: { md: `calc(100% - 280px)` },
-        ml: { md: '280px' },
-        zIndex: (theme) => theme.zIndex.drawer + 1,
-        backgroundColor: '#ffffff',
-        color: '#333333',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        borderBottom: '1px solid #e0e0e0',
-      }}
-    >
-      <Toolbar>
-        {/* Mobile menu button */}
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          edge="start"
-          onClick={onMenuClick}
-          sx={{ mr: 2, display: { md: 'none' } }}
-        >
-          <MenuIcon />
-        </IconButton>
+    <header className="fixed top-0 right-0 left-0 md:left-72 z-20 bg-white border-b border-gray-200 shadow-sm h-16 transition-all duration-200">
+      <div className="flex items-center justify-between h-full px-4">
+        <div className="flex items-center">
+          <button
+            onClick={onMenuClick}
+            className="md:hidden p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none"
+          >
+            <MenuIcon />
+          </button>
+          <h1 className="text-xl font-semibold text-gray-800 ml-2 md:ml-0 truncate">
+            Event Management Platform
+          </h1>
+        </div>
 
-        {/* Title */}
-        <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-          Event Management Platform
-        </Typography>
-
-        {/* Right side actions */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <div className="flex items-center gap-3">
           {/* Notifications */}
-          <Tooltip title="Notifications">
-            <IconButton color="inherit">
-              <Badge badgeContent={3} color="error">
-                <Notifications />
-              </Badge>
-            </IconButton>
-          </Tooltip>
+          <button className="p-2 rounded-full text-gray-500 hover:text-gray-700 hover:bg-gray-100 relative">
+            <Notifications />
+            <span className="absolute top-1.5 right-1.5 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white"></span>
+          </button>
 
-          {/* User menu */}
-          <Tooltip title="Account">
-            <IconButton
-              color="inherit"
+          {/* User Menu Button */}
+          <div className="relative">
+            <button
               onClick={onUserMenuClick}
-              sx={{ ml: 1 }}
+              className="flex items-center focus:outline-none"
             >
               {user?.firstName ? (
-                <Avatar
-                  sx={{
-                    width: 32,
-                    height: 32,
-                    backgroundColor: 'primary.main',
-                    fontSize: '0.875rem',
-                  }}
-                >
+                <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-medium">
                   {user.firstName.charAt(0).toUpperCase()}
                   {user.lastName?.charAt(0).toUpperCase()}
-                </Avatar>
+                </div>
               ) : (
-                <AccountCircle />
+                <AccountCircle className="h-8 w-8 text-gray-500" />
               )}
-            </IconButton>
-          </Tooltip>
-        </Box>
+            </button>
 
-        {/* User menu dropdown */}
-        <Menu
-          anchorEl={userMenuAnchor}
-          open={Boolean(userMenuAnchor)}
-          onClose={onUserMenuClose}
-          onClick={onUserMenuClose}
-          PaperProps={{
-            elevation: 4,
-            sx: {
-              mt: 1.5,
-              minWidth: 200,
-              '& .MuiAvatar-root': {
-                width: 24,
-                height: 24,
-                ml: -0.5,
-                mr: 1,
-              },
-            },
-          }}
-          transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        >
-          {/* User info */}
-          <Box sx={{ px: 2, py: 1 }}>
-            <Typography variant="subtitle2" noWrap>
-              {user?.firstName} {user?.lastName}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" noWrap>
-              {user?.email}
-            </Typography>
-            <Typography variant="caption" color="primary">
-              {user?.role.toUpperCase()}
-            </Typography>
-          </Box>
+            {/* Dropdown Menu */}
+            {isMenuOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={onUserMenuClose}
+                ></div>
+                <div className="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
+                  <div className="px-4 py-3 border-b border-gray-100">
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {user?.firstName} {user?.lastName}
+                    </p>
+                    <p className="text-xs text-gray-500 truncate">
+                      {user?.email}
+                    </p>
+                    <p className="text-xs text-blue-600 mt-1 font-medium">
+                      {user?.role.toUpperCase()}
+                    </p>
+                  </div>
 
-          <Divider />
+                  <div className="py-1">
+                    <button
+                      onClick={onUserMenuClose}
+                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      <Person fontSize="small" className="mr-2 text-gray-400" />
+                      Profile
+                    </button>
+                    <button
+                      onClick={onUserMenuClose}
+                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      <Settings fontSize="small" className="mr-2 text-gray-400" />
+                      Settings
+                    </button>
+                  </div>
 
-          {/* Menu items */}
-          <MenuItem onClick={onUserMenuClose}>
-            <Person fontSize="small" sx={{ mr: 1 }} />
-            Profile
-          </MenuItem>
-          <MenuItem onClick={onUserMenuClose}>
-            <Settings fontSize="small" sx={{ mr: 1 }} />
-            Settings
-          </MenuItem>
-
-          <Divider />
-
-          <MenuItem onClick={onLogout} sx={{ color: 'error.main' }}>
-            <Logout fontSize="small" sx={{ mr: 1 }} />
-            Logout
-          </MenuItem>
-        </Menu>
-      </Toolbar>
-    </AppBar>
+                  <div className="border-t border-gray-100 py-1">
+                    <button
+                      onClick={onLogout}
+                      className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                    >
+                      <Logout fontSize="small" className="mr-2" />
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </header>
   );
 }

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Event Request</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        ::webkit-scrollbar { display: none;}
+        * { font-family: 'Inter', sans-serif; }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4A90E2',
+                        accent: '#FFCE00',
+                        danger: '#D0021B'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+
+<header id="header" class="bg-white shadow-sm border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-8">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-calendar-check text-primary text-2xl"></i>
+                    <span class="text-xl font-bold text-gray-900">EventPro</span>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">Dashboard</a>
+                    <a href="#" class="text-primary font-medium">Create Event</a>
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">My Events</a>
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">Reports</a>
+                </nav>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center bg-gray-100 rounded-lg p-1">
+                    <button class="px-3 py-1 bg-white rounded-md shadow-sm text-sm font-medium text-primary">EN</button>
+                    <button class="px-3 py-1 text-sm font-medium text-gray-600">TH</button>
+                </div>
+                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full">
+            </div>
+        </div>
+    </div>
+</header>
+
+<div id="progress-indicator" class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">1</div>
+                <span class="text-sm font-medium text-primary">Event Details</span>
+            </div>
+            <div class="h-px bg-gray-300 flex-1 max-w-20"></div>
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-gray-300 text-gray-500 rounded-full flex items-center justify-center text-sm font-medium">2</div>
+                <span class="text-sm text-gray-500">Requirements</span>
+            </div>
+            <div class="h-px bg-gray-300 flex-1 max-w-20"></div>
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-gray-300 text-gray-500 rounded-full flex items-center justify-center text-sm font-medium">3</div>
+                <span class="text-sm text-gray-500">Review & Submit</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<main id="main-content" class="max-w-7xl mx-auto px-6 py-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Create New Event Request</h1>
+        <p class="text-gray-600">Tell us about your event and we'll provide a customized solution</p>
+    </div>
+
+    <div class="grid grid-cols-12 gap-8">
+        <div id="form-section" class="col-span-8">
+            <form class="space-y-8">
+                <div id="basic-info-panel" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                        <i class="fa-solid fa-info-circle text-primary mr-3"></i>
+                        Basic Information
+                    </h2>
+                    
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Event Name *</label>
+                            <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Enter your event name" maxlength="100">
+                            <p class="text-xs text-gray-500 mt-1">0/100 characters</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Event Type</label>
+                            <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                                <option>Select event type</option>
+                                <option>Concerts</option>
+                                <option>Tech Talks</option>
+                                <option>Motor Shows</option>
+                                <option>Seminars</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Expected Attendees</label>
+                            <input type="range" min="50" max="50000" value="1000" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider">
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>50</span>
+                                <span class="font-medium text-primary">1,000 attendees</span>
+                                <span>50,000</span>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+                            <div class="relative">
+                                <input type="date" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                                <i class="fa-solid fa-calendar-days absolute right-3 top-3 text-gray-400"></i>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                            <div class="relative">
+                                <input type="date" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                                <i class="fa-solid fa-calendar-days absolute right-3 top-3 text-gray-400"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-3">Venue Preference</label>
+                            <div class="flex space-x-4">
+                                <label class="flex items-center">
+                                    <input type="radio" name="venue" class="w-4 h-4 text-primary border-gray-300 focus:ring-primary">
+                                    <span class="ml-2 text-sm text-gray-700">I have my own venue</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="venue" class="w-4 h-4 text-primary border-gray-300 focus:ring-primary">
+                                    <span class="ml-2 text-sm text-gray-700">Need assistance finding a venue</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="features-panel" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                        <i class="fa-solid fa-puzzle-piece text-primary mr-3"></i>
+                        Feature Selection
+                    </h2>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                            <div class="flex items-center">
+                                <input type="checkbox" checked disabled class="w-4 h-4 text-primary border-gray-300 rounded">
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-900">Basic Ticketing</p>
+                                    <p class="text-xs text-gray-500">Core ticketing features</p>
+                                </div>
+                            </div>
+                            <span class="text-sm font-medium text-green-600">Free</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-primary cursor-pointer">
+                            <div class="flex items-center">
+                                <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded">
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-900">Advanced Ticketing</p>
+                                    <p class="text-xs text-gray-500">Promo codes, group discounts</p>
+                                </div>
+                            </div>
+                            <span class="text-sm font-medium text-primary">+$500</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-primary cursor-pointer">
+                            <div class="flex items-center">
+                                <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded">
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-900">Seat Mapping</p>
+                                    <p class="text-xs text-gray-500">Visual seat selection</p>
+                                </div>
+                            </div>
+                            <span class="text-sm font-medium text-primary">+$1,200</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-primary cursor-pointer">
+                            <div class="flex items-center">
+                                <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded">
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-900">VIP Management</p>
+                                    <p class="text-xs text-gray-500">Special access control</p>
+                                </div>
+                            </div>
+                            <span class="text-sm font-medium text-primary">+$800</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-primary cursor-pointer">
+                            <div class="flex items-center">
+                                <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded">
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-900">Multi-currency</p>
+                                    <p class="text-xs text-gray-500">International support</p>
+                                </div>
+                            </div>
+                            <span class="text-sm font-medium text-primary">+$300</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-primary cursor-pointer">
+                            <div class="flex items-center">
+                                <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded">
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-900">Analytics</p>
+                                    <p class="text-xs text-gray-500">Advanced insights</p>
+                                </div>
+                            </div>
+                            <span class="text-sm font-medium text-primary">+$400</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="additional-requirements" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                        <i class="fa-solid fa-file-text text-primary mr-3"></i>
+                        Additional Requirements
+                    </h2>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Event Description</label>
+                            <textarea rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Describe your event in detail..."></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Upload Files</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary cursor-pointer">
+                                <i class="fa-solid fa-cloud-upload-alt text-3xl text-gray-400 mb-3"></i>
+                                <p class="text-sm text-gray-600">Drop files here or click to upload</p>
+                                <p class="text-xs text-gray-500 mt-1">Event brief, venue layouts, etc.</p>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Special Requirements</label>
+                            <textarea rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Any special requirements or notes..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div id="sidebar" class="col-span-4">
+            <div class="sticky top-8 space-y-6">
+                <div id="pricing-calculator" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fa-solid fa-calculator text-primary mr-2"></i>
+                        Live Pricing
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Base platform fee</span>
+                            <span class="font-medium">$2,500</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Selected features</span>
+                            <span class="font-medium">$0</span>
+                        </div>
+                        <hr class="border-gray-200">
+                        <div class="flex justify-between text-lg font-semibold">
+                            <span>Total estimate</span>
+                            <span class="text-primary">$2,500</span>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full mt-4 bg-primary text-white py-3 rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                        Get Detailed Quote
+                    </button>
+                </div>
+
+                <div id="help-section" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Need Help?</h3>
+                    
+                    <div class="space-y-3">
+                        <button class="w-full text-left p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                            <i class="fa-solid fa-chart-bar text-primary mr-2"></i>
+                            Feature Comparison
+                        </button>
+                        <button class="w-full text-left p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                            <i class="fa-solid fa-comments text-primary mr-2"></i>
+                            Live Chat Support
+                        </button>
+                        <button class="w-full text-left p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                            <i class="fa-solid fa-phone text-primary mr-2"></i>
+                            Contact Sales Team
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer id="footer" class="bg-white border-t border-gray-200 mt-12">
+    <div class="max-w-7xl mx-auto px-6 py-6">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded mr-3">
+                <span class="text-sm text-gray-600">I agree to the <a href="#" class="text-primary hover:underline">Terms and Conditions</a></span>
+            </div>
+            <div class="flex space-x-4">
+                <button class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors">
+                    Save as Draft
+                </button>
+                <button class="px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                    Submit Request
+                </button>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

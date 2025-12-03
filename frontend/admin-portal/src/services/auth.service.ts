@@ -1,4 +1,4 @@
-import { User, AuthResponse, LoginDto } from '@/shared/types';
+import { User, AuthResponse, LoginDto } from '../types';
 import { api } from './api';
 
 export class AuthService {

@@ -134,30 +134,30 @@ export class AuthController {
     return { message: 'Logout successful' };
   }
 
-  // @Get('current-user')
-  // @UseGuards(JwtAuthGuard)
-  // @ApiBearerAuth()
-  // @ApiOperation({ summary: 'Get current user profile' })
-  // @ApiResponse({
-  //   status: 200,
-  //   description: 'User profile retrieved',
-  //   type: UserResponseDto,
-  // })
-  // @ApiResponse({ status: 401, description: 'Unauthorized' })
-  // async getProfile(@Request() req): Promise<UserResponseDto> {
-  //   const user = req.user;
-  //   return {
-  //     id: user.id,
-  //     email: user.email,
-  //     firstName: user.firstName,
-  //     lastName: user.lastName,
-  //     role: user.role,
-  //     isActive: user.isActive,
-  //     emailVerified: user.emailVerified,
-  //     createdAt: user.createdAt,
-  //     lastLogin: user.lastLogin,
-  //   };
-  // }
+  @Get('profile')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get current user profile' })
+  @ApiResponse({
+    status: 200,
+    description: 'User profile retrieved',
+    type: UserResponseDto,
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async getProfile(@Request() req): Promise<UserResponseDto> {
+    const user = req.user;
+    return {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: user.role,
+      isActive: user.isActive,
+      emailVerified: user.emailVerified,
+      createdAt: user.createdAt,
+      lastLogin: user.lastLogin,
+    };
+  }
 
   @Post('change-password')
   @UseGuards(JwtAuthGuard)

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Marketplace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        ::webkit-scrollbar { display: none;}
+        * { font-family: 'Inter', sans-serif; }
+        .search-dropdown { display: none; }
+        .search-input:focus + .search-dropdown { display: block; }
+        .event-card:hover { transform: translateY(-2px); }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4A90E2',
+                        accent: '#FFCE00',
+                        danger: '#D0021B'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+
+<header id="header" class="bg-white shadow-sm border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-8">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-calendar-check text-primary text-2xl"></i>
+                    <span class="text-xl font-bold text-gray-900">EventPro</span>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#" class="text-primary font-medium">Discover Events</a>
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">Create Event</a>
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">My Events</a>
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">Reports</a>
+                </nav>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center bg-gray-100 rounded-lg p-1">
+                    <button class="px-3 py-1 bg-white rounded-md shadow-sm text-sm font-medium text-primary">EN</button>
+                    <button class="px-3 py-1 text-sm font-medium text-gray-600">TH</button>
+                </div>
+                <button class="relative p-2">
+                    <i class="fa-solid fa-heart text-gray-600 text-xl"></i>
+                    <span class="absolute -top-1 -right-1 bg-danger text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                </button>
+                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg" class="w-8 h-8 rounded-full">
+            </div>
+        </div>
+    </div>
+</header>
+
+<section id="hero-search" class="bg-white py-12">
+    <div class="max-w-4xl mx-auto px-6">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">Discover Amazing Events</h1>
+            <p class="text-xl text-gray-600">Find concerts, tech talks, seminars and more happening near you</p>
+        </div>
+        
+        <div class="relative mb-6">
+            <div class="flex items-center bg-white border-2 border-gray-200 rounded-xl shadow-lg">
+                <div class="flex-1 relative">
+                    <i class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" placeholder="Search events, artists, venues..." 
+                           class="search-input w-full pl-12 pr-4 py-4 text-lg border-0 focus:outline-none focus:ring-0 rounded-l-xl">
+                    <div class="search-dropdown absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg mt-1 z-10">
+                        <div class="p-4">
+                            <div class="text-sm text-gray-500 mb-2">Recent Searches</div>
+                            <div class="space-y-2">
+                                <div class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                                    <i class="fa-solid fa-clock-rotate-left text-gray-400"></i>
+                                    <span>Tech Conference Bangkok</span>
+                                </div>
+                                <div class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                                    <i class="fa-solid fa-clock-rotate-left text-gray-400"></i>
+                                    <span>Jazz Concert</span>
+                                </div>
+                            </div>
+                            <hr class="my-3">
+                            <div class="text-sm text-gray-500 mb-2">Popular Near You</div>
+                            <div class="space-y-2">
+                                <div class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                                    <i class="fa-solid fa-fire text-orange-500"></i>
+                                    <span>Motor Show 2024</span>
+                                </div>
+                                <div class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                                    <i class="fa-solid fa-fire text-orange-500"></i>
+                                    <span>Startup Pitch Night</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-l border-gray-200 pl-4">
+                    <button class="p-2 text-gray-400 hover:text-primary">
+                        <i class="fa-solid fa-microphone text-xl"></i>
+                    </button>
+                </div>
+                <button class="bg-primary text-white px-8 py-4 rounded-r-xl font-medium hover:bg-blue-600 transition-colors">
+                    Search
+                </button>
+            </div>
+        </div>
+
+        <div id="quick-filters" class="flex flex-wrap gap-3 justify-center">
+            <div class="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-full">
+                <i class="fa-solid fa-music"></i>
+                <span>Concerts</span>
+            </div>
+            <div class="flex items-center space-x-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-200 cursor-pointer">
+                <i class="fa-solid fa-laptop-code"></i>
+                <span>Tech Talks</span>
+            </div>
+            <div class="flex items-center space-x-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-200 cursor-pointer">
+                <i class="fa-solid fa-football"></i>
+                <span>Sports</span>
+            </div>
+            <div class="flex items-center space-x-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-200 cursor-pointer">
+                <i class="fa-solid fa-chalkboard-teacher"></i>
+                <span>Seminars</span>
+            </div>
+            <div class="flex items-center space-x-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-200 cursor-pointer">
+                <i class="fa-solid fa-calendar-day"></i>
+                <span>Today</span>
+            </div>
+            <div class="flex items-center space-x-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-200 cursor-pointer">
+                <i class="fa-solid fa-tag"></i>
+                <span>Free</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<main id="main-content" class="max-w-7xl mx-auto px-6 py-8">
+    <div class="grid grid-cols-12 gap-8">
+        <div id="content-area" class="col-span-9">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">Events Near You</h2>
+                    <p class="text-gray-600">Found 247 events in Bangkok</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                        <option>Sort by Date</option>
+                        <option>Sort by Price</option>
+                        <option>Sort by Popularity</option>
+                    </select>
+                    <div class="flex bg-gray-100 rounded-lg p-1">
+                        <button class="p-2 bg-white rounded shadow-sm">
+                            <i class="fa-solid fa-th-large text-primary"></i>
+                        </button>
+                        <button class="p-2 text-gray-600">
+                            <i class="fa-solid fa-list"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="events-grid" class="grid grid-cols-3 gap-6">
+                <div class="event-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all cursor-pointer">
+                    <div class="relative h-48 overflow-hidden">
+                        <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/a7a1091c52-20dd81357b6591757461.png" alt="electronic music concert stage with colorful lights and crowd" />
+                        <div class="absolute top-3 left-3">
+                            <span class="bg-accent text-gray-900 px-2 py-1 rounded-full text-xs font-medium">Featured</span>
+                        </div>
+                        <div class="absolute top-3 right-3">
+                            <button class="bg-white bg-opacity-90 p-2 rounded-full hover:bg-opacity-100">
+                                <i class="fa-regular fa-heart text-gray-600"></i>
+                            </button>
+                        </div>
+                        <div class="absolute bottom-3 left-3 bg-white bg-opacity-90 px-2 py-1 rounded text-xs font-medium">
+                            <i class="fa-solid fa-users mr-1"></i>
+                            2,847 attending
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-semibold text-gray-900 text-lg">Electronic Music Festival</h3>
+                            <div class="text-right">
+                                <div class="text-primary font-bold">$85</div>
+                                <div class="text-xs text-gray-500">From</div>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">Experience the best electronic music artists in Bangkok's premier venue</p>
+                        <div class="flex items-center text-sm text-gray-500 mb-2">
+                            <i class="fa-solid fa-calendar mr-2"></i>
+                            <span>Dec 15, 2024 • 8:00 PM</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500 mb-3">
+                            <i class="fa-solid fa-map-marker-alt mr-2"></i>
+                            <span>Impact Arena • 2.3 km away</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="flex-1 bg-primary text-white py-2 rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                                View Details
+                            </button>
+                            <button class="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-colors">
+                                Quick Buy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all cursor-pointer">
+                    <div class="relative h-48 overflow-hidden">
+                        <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/07da1ef840-7ad448800298fc046d01.png" alt="tech conference presentation with speakers on stage and audience" />
+                        <div class="absolute top-3 right-3">
+                            <button class="bg-white bg-opacity-90 p-2 rounded-full hover:bg-opacity-100">
+                                <i class="fa-regular fa-heart text-gray-600"></i>
+                            </button>
+                        </div>
+                        <div class="absolute bottom-3 left-3 bg-white bg-opacity-90 px-2 py-1 rounded text-xs font-medium">
+                            <i class="fa-solid fa-users mr-1"></i>
+                            156 attending
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-semibold text-gray-900 text-lg">AI & Future Tech Summit</h3>
+                            <div class="text-right">
+                                <div class="text-green-600 font-bold">FREE</div>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">Learn about the latest trends in artificial intelligence and emerging technologies</p>
+                        <div class="flex items-center text-sm text-gray-500 mb-2">
+                            <i class="fa-solid fa-calendar mr-2"></i>
+                            <span>Dec 18, 2024 • 9:00 AM</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500 mb-3">
+                            <i class="fa-solid fa-map-marker-alt mr-2"></i>
+                            <span>Queen Sirikit Center • 5.1 km away</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="flex-1 bg-primary text-white py-2 rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                                View Details
+                            </button>
+                            <button class="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-colors">
+                                Register
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all cursor-pointer">
+                    <div class="relative h-48 overflow-hidden">
+                        <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/8bce2591e1-e8664fd764ae4a008f5a.png" alt="luxury car motor show exhibition with sports cars on display" />
+                        <div class="absolute top-3 left-3">
+                            <span class="bg-danger text-white px-2 py-1 rounded-full text-xs font-medium">Limited</span>
+                        </div>
+                        <div class="absolute top-3 right-3">
+                            <button class="bg-white bg-opacity-90 p-2 rounded-full hover:bg-opacity-100">
+                                <i class="fa-solid fa-heart text-danger"></i>
+                            </button>
+                        </div>
+                        <div class="absolute bottom-3 left-3 bg-white bg-opacity-90 px-2 py-1 rounded text-xs font-medium">
+                            <i class="fa-solid fa-users mr-1"></i>
+                            1,234 attending
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-semibold text-gray-900 text-lg">Bangkok Motor Show 2024</h3>
+                            <div class="text-right">
+                                <div class="text-primary font-bold">$45</div>
+                                <div class="text-xs text-gray-500">From</div>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">Discover the latest automotive innovations and luxury vehicles</p>
+                        <div class="flex items-center text-sm text-gray-500 mb-2">
+                            <i class="fa-solid fa-calendar mr-2"></i>
+                            <span>Dec 20-25, 2024 • 10:00 AM</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500 mb-3">
+                            <i class="fa-solid fa-map-marker-alt mr-2"></i>
+                            <span>Bitec Bangna • 8.7 km away</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="flex-1 bg-primary text-white py-2 rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                                View Details
+                            </button>
+                            <button class="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-colors">
+                                Quick Buy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all cursor-pointer">
+                    <div class="relative h-48 overflow-hidden">
+                        <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/9c8162c968-020a9e655e8303f08f69.png" alt="jazz band performing on stage with saxophone player and audience" />
+                        <div class="absolute top-3 right-3">
+                            <button class="bg-white bg-opacity-90 p-2 rounded-full hover:bg-opacity-100">
+                                <i class="fa-regular fa-heart text-gray-600"></i>
+                            </button>
+                        </div>
+                        <div class="absolute bottom-3 left-3 bg-white bg-opacity-90 px-2 py-1 rounded text-xs font-medium">
+                            <i class="fa-solid fa-users mr-1"></i>
+                            89 attending
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-semibold text-gray-900 text-lg">Jazz Night Bangkok</h3>
+                            <div class="text-right">
+                                <div class="text-primary font-bold">$35</div>
+                                <div class="text-xs text-gray-500">From</div>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">An intimate evening of smooth jazz with local and international artists</p>
+                        <div class="flex items-center text-sm text-gray-500 mb-2">
+                            <i class="fa-solid fa-calendar mr-2"></i>
+                            <span>Dec 16, 2024 • 7:30 PM</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500 mb-3">
+                            <i class="fa-solid fa-map-marker-alt mr-2"></i>
+                            <span>Saxophone Pub • 1.2 km away</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="flex-1 bg-primary text-white py-2 rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                                View Details
+                            </button>
+                            <button class="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-colors">
+                                Quick Buy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all cursor-pointer">
+                    <div class="relative h-48 overflow-hidden">
+                        <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/91a8df2861-002b288d49d401a34de3.png" alt="business seminar presentation with speaker and professional audience" />
+                        <div class="absolute top-3 right-3">
+                            <button class="bg-white bg-opacity-90 p-2 rounded-full hover:bg-opacity-100">
+                                <i class="fa-regular fa-heart text-gray-600"></i>
+                            </button>
+                        </div>
+                        <div class="absolute bottom-3 left-3 bg-white bg-opacity-90 px-2 py-1 rounded text-xs font-medium">
+                            <i class="fa-solid fa-users mr-1"></i>
+                            78 attending
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-semibold text-gray-900 text-lg">Digital Marketing Masterclass</h3>
+                            <div class="text-right">
+                                <div class="text-primary font-bold">$120</div>
+                                <div class="text-xs text-gray-500">From</div>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">Master the art of digital marketing with industry experts</p>
+                        <div class="flex items-center text-sm text-gray-500 mb-2">
+                            <i class="fa-solid fa-calendar mr-2"></i>
+                            <span>Dec 22, 2024 • 1:00 PM</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500 mb-3">
+                            <i class="fa-solid fa-map-marker-alt mr-2"></i>
+                            <span>Central World • 3.4 km away</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="flex-1 bg-primary text-white py-2 rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                                View Details
+                            </button>
+                            <button class="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-colors">
+                                Quick Buy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all cursor-pointer">
+                    <div class="relative h-48 overflow-hidden">
+                        <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/10882977ac-bfa6e0ed309d383f9777.png" alt="food festival outdoor market with vendors and people eating" />
+                        <div class="absolute top-3 right-3">
+                            <button class="bg-white bg-opacity-90 p-2 rounded-full hover:bg-opacity-100">
+                                <i class="fa-regular fa-heart text-gray-600"></i>
+                            </button>
+                        </div>
+                        <div class="absolute bottom-3 left-3 bg-white bg-opacity-90 px-2 py-1 rounded text-xs font-medium">
+                            <i class="fa-solid fa-users mr-1"></i>
+                            567 attending
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-semibold text-gray-900 text-lg">Street Food Festival</h3>
+                            <div class="text-right">
+                                <div class="text-green-600 font-bold">FREE</div>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">Taste authentic Thai street food from the best vendors in the city</p>
+                        <div class="flex items-center text-sm text-gray-500 mb-2">
+                            <i class="fa-solid fa-calendar mr-2"></i>
+                            <span>Dec 19-21, 2024 • 5:00 PM</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500 mb-3">
+                            <i class="fa-solid fa-map-marker-alt mr-2"></i>
+                            <span>Lumpini Park • 4.2 km away</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="flex-1 bg-primary text-white py-2 rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                                View Details
+                            </button>
+                            <button class="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-colors">
+                                Get Info
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-center mt-8">
+                <button class="bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors">
+                    Load More Events
+                </button>
+            </div>
+        </div>
+
+        <div id="sidebar" class="col-span-3">
+            <div class="sticky top-8 space-y-6">
+                <div id="map-section" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fa-solid fa-map text-primary mr-2"></i>
+                        Events Near You
+                    </h3>
+                    <div class="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <div class="text-center">
+                            <i class="fa-solid fa-map-marker-alt text-primary text-3xl mb-2"></i>
+                            <p class="text-sm text-gray-600">Interactive map with event locations</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 space-y-2">
+                        <button class="w-full text-left p-2 hover:bg-gray-50 rounded flex items-center">
+                            <i class="fa-solid fa-location-dot text-primary mr-2"></i>
+                            <span class="text-sm">Use my location</span>
+                        </button>
+                        <button class="w-full text-left p-2 hover:bg-gray-50 rounded flex items-center">
+                            <i class="fa-solid fa-train text-primary mr-2"></i>
+                            <span class="text-sm">Show public transit</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="personalized-section" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Recommended for You</h3>
+                    <div class="space-y-4">
+                        <div class="flex space-x-3">
+                            <div class="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
+                                <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/2904c0f9ce-38dd403aa8dd1db2da17.png" alt="classical orchestra concert hall performance" />
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-medium text-gray-900 text-sm">Classical Concert</h4>
+                                <p class="text-xs text-gray-500">Dec 23 • $65</p>
+                                <div class="flex items-center mt-1">
+                                    <div class="flex text-yellow-400">
+                                        <i class="fa-solid fa-star text-xs"></i>
+                                        <i class="fa-solid fa-star text-xs"></i>
+                                        <i class="fa-solid fa-star text-xs"></i>
+                                        <i class="fa-solid fa-star text-xs"></i>
+                                        <i class="fa-solid fa-star text-xs"></i>
+                                    </div>
+                                    <span class="text-xs text-gray-500 ml-1">4.9</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex space-x-3">
+                            <div class="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
+                                <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/a505f6b33f-48daf65723a2b292d9c8.png" alt="art gallery exhibition opening with people viewing paintings" />
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-medium text-gray-900 text-sm">Art Gallery Opening</h4>
+                                <p class="text-xs text-gray-500">Dec 24 • Free</p>
+                                <div class="flex items-center mt-1">
+                                    <div class="
